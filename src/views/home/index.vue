@@ -1,35 +1,20 @@
 <template>
   <div class="rtc-demo" :class="isFullScreen ? 'fullScreen' : ''">
     <div class="header" v-show="$store.state.data.classNum">
-      <span @click="hCopy" id="channel"
-        >Meeting code：{{ $store.state.data.classNum }}</span
-      ><span>&nbsp;Nick name：{{ $store.state.data.userName }}</span>
+      <span @click="hCopy" id="channel">Meeting code：{{ $store.state.data.classNum }}</span>
+      <span>&nbsp;Nick name：{{ $store.state.data.userName }}</span>
     </div>
     <div class="container">
       <div class="container-box">
         <!-- <div v-if="toastVideo!==''" class="toast-video">{{toastVideo}}<span @click="toastVideo=''">x</span></div> -->
         <div class="center-avatar">{{ $store.state.data.classNum }}</div>
-        <video
-          :class="{ transform: !$store.state.data.isSwitchScreen }"
-          id="localVideo"
-          autoplay
-        ></video>
+        <video :class="{ transform: !$store.state.data.isSwitchScreen }" id="localVideo" autoplay></video>
         <!-- <i @click="myFullscreen" :style="!this.isFullScreen ? 'background-image:url('+ fullUrl +')' : 'background-image:url('+ fullOnUrl +')'"></i> -->
       </div>
-      <div
-        class="container-memberVideo"
-        :class="showSlide ? 'showright' : 'hideright'"
-      >
+      <div class="container-memberVideo" :class="showSlide ? 'showright' : 'hideright'">
         <div class="memberContainer">
-          <div
-            v-show="isFullScreen"
-            class="memberTab"
-            @click="showSlide = !showSlide"
-          >
-            <i
-              class="iconfont"
-              :class="!showSlide ? 'icon-zuobian' : 'icon-youbian'"
-            ></i>
+          <div v-show="isFullScreen" class="memberTab" @click="showSlide = !showSlide">
+            <i class="iconfont" :class="!showSlide ? 'icon-zuobian' : 'icon-youbian'"></i>
           </div>
           <div class="member-content">
             <userlist></userlist>
@@ -44,77 +29,42 @@
 
       <div class="function">
         <div class="mic">
-          <i
-            @click="muteLocalMic"
-            :style="
-              this.audio
-                ? 'background-image:url(' + micUrl + ')'
-                : 'background-image:url(' + micOnUrl + ')'
-            "
-          ></i>
-          <span>Mute</span
-          ><!-- 静音 -->
+          <i @click="muteLocalMic" :style=" this.audio ? 'background-image:url(' + micUrl + ')' : 'background-image:url(' + micOnUrl + ')'"></i>
+          <span>Mute</span><!-- 静音 -->
         </div>
         <div class="camera">
-          <i
-            @click="muteLocalCamera"
-            :style="
-              this.video
-                ? 'background-image:url(' + cameraUrl + ')'
-                : 'background-image:url(' + cameraOnUrl + ')'
-            "
-          ></i>
-          <span>Camera</span
-          ><!-- 摄像头-->
+          <i @click="muteLocalCamera" :style=" this.video ? 'background-image:url(' + cameraUrl + ')' : 'background-image:url(' + cameraOnUrl + ')'"></i>
+          <span>Camera</span><!-- 摄像头-->
         </div>
         <div class="off">
-          <i
-            @click="leaveShadow = true"
-            :style="'background-image:url(' + offUrl + ')'"
-          ></i>
-          <span>Leave the meeting</span
-          ><!-- 离开会议-->
+          <i @click="leaveShadow = true" :style="'background-image:url(' + offUrl + ')'" ></i>
+          <span>Leave the meeting</span><!-- 离开会议-->
         </div>
         <div class="screenShare">
-          <i
-            @click="publishScreen"
-            :style="
-              !this.$store.state.data.isPublishScreen
-                ? 'background-image:url(' + screenUrl + ')'
-                : 'background-image:url(' + screenOnUrl + ')'
-            "
-          ></i>
-          <span>Share screen</span
-          ><!-- 共享屏幕-->
+          <i @click="publishScreen" 
+            :style="!this.$store.state.data.isPublishScreen ? 'background-image:url(' + screenUrl + ')': 'background-image:url(' + screenOnUrl + ')'">
+          </i>
+          <span>Share screen</span><!-- 共享屏幕-->
         </div>
         <div class="muteAll">
-          <i
-            @click="muteAll"
-            :style="
-              !this.muteAllState
-                ? 'background-image:url(' + muteAllUrl + ')'
-                : 'background-image:url(' + muteAllOnUrl + ')'
-            "
-          ></i>
-          <span>Mute all staff</span
-          ><!--全员静音 -->
+          <i @click="muteAll" :style="!this.muteAllState ? 'background-image:url(' + muteAllUrl + ')' : 'background-image:url(' + muteAllOnUrl + ')'"></i>
+          <span>Mute all staff</span><!--全员静音 -->
         </div>
 
-        <div class="amount">
-          <i
-            @click="muteAll"
-            :style="'background-image:url(' + priceUrl + ')'"
-          ></i>
-          <span
-            >合計：<input type="text" id="name" name="price" size="10"
-          /></span>
+        <!-- 合計 -->
+        <div>
+          <span>
+            合計：<input type="text" id="name" name="price" size="10" v-model="amount" v-on:keyup.enter="submit" placeholder="Enter the amount"/>
+          </span>
+        </div>
+        <div>
+          <button @click="submit()">決済</button>
         </div>
       </div>
       <div class="nsetting">
         <el-popover placement="top" width="247" trigger="click">
           <div>
-            <span style="font-size: 12px">下次加入会议自动触发</span
-            ><!-- 다음에 회의에 참가할 때 자동으로 트리거 -->
+            <span style="font-size: 12px">下次加入会议自动触发</span><!-- 다음에 회의에 참가할 때 자동으로 트리거 -->
             <br />
             <hr />
             <br />
@@ -122,15 +72,10 @@
             <el-switch active-color="#016EFF" v-model="preSetMic"> </el-switch>
             <br />
             <br />
-            <span style="margin-right:20px">打开自己的摄像头</span
-            ><!-- 나만의 마이크 켜기 -->
-            <el-switch active-color="#016EFF" v-model="preSetCamera">
-            </el-switch>
+            <span style="margin-right:20px">打开自己的摄像头</span><!-- 나만의 마이크 켜기 -->
+            <el-switch active-color="#016EFF" v-model="preSetCamera"></el-switch>
           </div>
-          <i
-            slot="reference"
-            :style="'background-image:url(' + settingUrl + ')'"
-          ></i>
+          <i slot="reference" :style="'background-image:url(' + settingUrl + ')'"></i>
         </el-popover>
         <span>设置</span>
       </div>
@@ -166,18 +111,17 @@ import fullOnUrl from "../../assets/icon/full-on.png";
 import settingUrl from "../../assets/icon/setting.png";
 import micListUrl from "../../assets/icon/micList.png";
 import micListOffUrl from "../../assets/icon/micList-off.png";
-import priceUrl from "../../assets/icon/priceCheck.png";
 
 export default {
   data() {
     return {
       audio: true,
       video: true,
-      leaveShadow: false, //离开窗口
-      isFullScreen: false, //全屏状态
-      // toastVideo: "", //主窗口顶部显示信息
-      showSlide: true, //全屏状态侧边显示状态
-      muteAllState: false, //全员静音状态
+      leaveShadow: false, //창을 떠나
+      isFullScreen: false, //전체 화면 상태
+      // toastVideo: "", //메인 창 상단에 표시되는 정보
+      showSlide: true, //전체 화면 상태 측면 표시 상태
+      muteAllState: false, //모든 구성원은 침묵
       offUrl: offUrl,
       micUrl: micUrl,
       micOnUrl: micOnUrl,
@@ -192,8 +136,9 @@ export default {
       settingUrl: settingUrl,
       micListUrl: micListUrl,
       micListOffUrl: micListOffUrl,
-      preSetMic: true, //预设麦克风
-      preSetCamera: true, //预设摄像头
+      preSetMic: true, //기본 마이크
+      preSetCamera: true, //기본 카메라
+      amount: '',
     };
   },
   created() {},
@@ -214,7 +159,7 @@ export default {
           if (RTCClient.instance.getRoomUserList().length === 0) {
             this.$message(
               "当前只有你一个人，你可以点击页面顶部【复制会议码】给其他参会人员"
-            );
+            );// 현재 본인만 있습니다. 페이지 상단의 [회의 코드 복사]를 클릭하여 다른 참가자에게 제공할 수 있습니다.
           }
           hvuex({
             isSwitchScreen: false,
@@ -233,7 +178,7 @@ export default {
           this.$message(err.message);
         });
     },
-    // 注册回调
+    // 콜백 등록
     registerCallBack() {
       RTCClient.instance.registerCallBack((eventName, data) => {
         switch (eventName) {
@@ -266,11 +211,11 @@ export default {
         }
       });
     },
-    // 离会返回
+    // 휴가는 돌아올 것이다
     goBack() {
       Utils.exitRoom();
     },
-    // 控制本地麦克风采集
+    // 로컬 마이크 수집 제어
     muteLocalMic() {
       if (!this.$store.state.data.isPublish) {
         this.$message("未推流");
@@ -279,7 +224,7 @@ export default {
       RTCClient.instance.muteLocalMic(!this.audio);
       this.audio = !this.audio;
     },
-    // 摄像头禁止
+    // 카메라 금지
     muteLocalCamera() {
       if (!this.$store.state.data.isPublish) {
         this.$message("未推流");
@@ -294,7 +239,7 @@ export default {
         });
       this.video = !this.video;
     },
-    // 推屏幕流 (push screen stream)
+    // push screen stream
     publishScreen() {
       if (!this.$store.state.data.isPublish) {
         Util.toast("Unreject"); // 未推流
@@ -320,34 +265,48 @@ export default {
           .catch((err) => {});
       }
     },
-    // 点击会议码事件 复制会议码 ( 회의 코드 이벤트를 클릭하여 회의 코드를 복사합니다.)
+    // 회의 코드 이벤트를 클릭하여 회의 코드를 복사합니다
     hCopy() {
       this.$message(
         Utils.hCopy("channel") ? "The meeting code has been copied" : ""
-      ); // 会议码已复制
+      ); // 회의 코드가 복사되었습니다.
     },
-    // 全员静音开/关(모든 멤버 음소거 켜기/끄기)
+    // 모든 멤버 음소거 켜기/끄기)
     muteAll() {
       this.muteAllState = !this.muteAllState;
       if (this.muteAllState) {
         RTCClient.instance.muteAllRemoteAudioPlaying(true);
-        this.$message("All current members have been muted"); // 当前全员已静音(모든 현재 회원이 음소거되었습니다.)
+        this.$message("All current members have been muted"); // 모든 현재 회원이 음소거되었습니다
       } else {
         RTCClient.instance.muteAllRemoteAudioPlaying(false);
-        this.$message("All mute is turned off"); // 全员静音已关闭(모든 음소거가 꺼져 있습니다.)
+        this.$message("All mute is turned off"); // 모든 음소거가 꺼져 있습니다
       }
+    },
+    submit() {
+      var reg = new RegExp(/^([0-9]{1,12})?$/g);
+      if (!reg.test(this.amount)) {
+        this.$message("Please enter a number");
+        return;
+      }
+      alert(this.amount);
+
+      /*
+      hvuex({ classNum: this.room, userName: this.displayName });
+      // 페이지 이동
+      this.$router.push("/meet");
+      */
     },
   },
   watch: {
     /**
-     * 监听预设麦克风
+     * 사전 설정 마이크 모니터링
      */
     preSetMic(n, o) {
       window.localStorage.removeItem("preSetMic");
       window.localStorage.setItem("preSetMic", this.preSetMic);
     },
     /**
-     * 监听预设摄像头
+     * 프리셋 카메라 모니터링
      */
     preSetCamera(n, o) {
       window.localStorage.removeItem("preSetCamera");
@@ -358,317 +317,337 @@ export default {
 </script>
 
 <style lang="scss">
-.rtc-demo {
-  .header {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 40px;
-    font-size: 16px;
-    color: #fff;
-    background: #016eff;
-    width: 100%;
-    text-align: center;
-    line-height: 40px;
-    #channel {
-      user-select: text;
-      -webkit-user-select: text;
-      -moz-user-select: text;
-      -ms-user-select: text;
-      cursor: pointer;
-    }
-  }
-  .container {
-    position: absolute;
-    display: flex;
-    width: 100%;
-    bottom: 113px;
-    top: 40px;
-    background: #f8f8f8;
-    .container-box {
-      width: calc(100% - 218px);
-      height: 100%;
-      position: relative;
-      background: #2f2f2f;
-      .toast-video {
-        width: 100%;
-        height: 50px;
-        background: rgba(0, 0, 0, 0.8);
-        position: absolute;
-        top: 0;
-        line-height: 50px;
-        color: #ffffff;
-        font-size: 16px;
-        padding-left: 30px;
-        z-index: 1;
-        span {
-          padding: 0 10px;
-          position: absolute;
-          right: 10px;
-          cursor: pointer;
-        }
-      }
-      .center-avatar {
-        width: 100px;
-        height: 100px;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        margin-left: -50px;
-        margin-top: -50px;
-        font-size: 30px;
-        font-weight: 800;
-        color: #fff;
-        border-radius: 50%;
-        background: #016eff;
-        text-align: center;
-        line-height: 100px;
-      }
-      video {
-        width: 100%;
-        height: 100%;
-        background: transparent;
-        position: relative;
-      }
-      i {
-        width: 36px;
-        height: 36px;
-        position: absolute;
-        right: 35px;
-        bottom: 35px;
-        display: inline-block;
-        background-repeat: no-repeat;
-        background-position: center center;
+  .rtc-demo {
+    .header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 40px;
+      font-size: 16px;
+      color: #fff;
+      background: #016eff;
+      width: 100%;
+      text-align: center;
+      line-height: 40px;
+      #channel {
+        user-select: text;
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
         cursor: pointer;
       }
     }
-    .container-memberVideo {
-      .memberContainer {
-        width: 209px;
+    .container {
+      position: absolute;
+      display: flex;
+      width: 100%;
+      bottom: 113px;
+      top: 40px;
+      background: #f8f8f8;
+      .container-box {
+        width: calc(100% - 218px);
         height: 100%;
-        padding: 10px 13px;
-        background: #fff;
-        .member-title {
-          display: flex;
-          border-bottom: 1px solid #c0c0c0;
-          margin-bottom: 2px;
-          li {
-            font-size: 14px;
-            height: 44px;
-            width: 50%;
-            line-height: 44px;
-            text-align: center;
-            position: relative;
-            display: inline-block;
+        position: relative;
+        background: #2f2f2f;
+        .toast-video {
+          width: 100%;
+          height: 50px;
+          background: rgba(0, 0, 0, 0.8);
+          position: absolute;
+          top: 0;
+          line-height: 50px;
+          color: #ffffff;
+          font-size: 16px;
+          padding-left: 30px;
+          z-index: 1;
+          span {
+            padding: 0 10px;
+            position: absolute;
+            right: 10px;
             cursor: pointer;
-            i {
-              position: absolute;
-              left: 0;
-              bottom: -1px;
-              height: 2px;
-              width: 100%;
-              background: #0079f2;
-            }
           }
         }
-        .member-content {
-          height: calc(100% - 65px);
+        .center-avatar {
+          width: 100px;
+          height: 100px;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          margin-left: -50px;
+          margin-top: -50px;
+          font-size: 30px;
+          font-weight: 800;
+          color: #fff;
+          border-radius: 50%;
+          background: #016eff;
+          text-align: center;
+          line-height: 100px;
+        }
+        video {
+          width: 100%;
+          height: 100%;
+          background: transparent;
+          position: relative;
+        }
+        i {
+          width: 36px;
+          height: 36px;
+          position: absolute;
+          right: 35px;
+          bottom: 35px;
+          display: inline-block;
+          background-repeat: no-repeat;
+          background-position: center center;
+          cursor: pointer;
+        }
+      }
+      .container-memberVideo {
+        .memberContainer {
+          width: 209px;
+          height: 100%;
+          padding: 10px 13px;
+          background: #fff;
+          .member-title {
+            display: flex;
+            border-bottom: 1px solid #c0c0c0;
+            margin-bottom: 2px;
+            li {
+              font-size: 14px;
+              height: 44px;
+              width: 50%;
+              line-height: 44px;
+              text-align: center;
+              position: relative;
+              display: inline-block;
+              cursor: pointer;
+              i {
+                position: absolute;
+                left: 0;
+                bottom: -1px;
+                height: 2px;
+                width: 100%;
+                background: #0079f2;
+              }
+            }
+          }
+          .member-content {
+            height: calc(100% - 65px);
+          }
         }
       }
     }
-  }
-  .footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 113px;
-    width: 100%;
-    background: #f8f8f8;
-    display: flex;
-    justify-content: space-between;
-    .logo {
+    .footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 113px;
+      width: 100%;
+      background: #f8f8f8;
       display: flex;
-      align-items: center;
-      margin-left: 7px;
-      i {
-        font-size: 40px;
-        margin: 0 5px;
+      justify-content: space-between;
+      .logo {
+        display: flex;
+        align-items: center;
+        margin-left: 7px;
+        i {
+          font-size: 40px;
+          margin: 0 5px;
+        }
+        span {
+          font-size: 16px;
+        }
       }
-      span {
-        font-size: 16px;
+      .function {
+        display: flex;
+        div {
+          margin: 0 13px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          i {
+            width: 120px;
+            height: 48px;
+            border-radius: 24px;
+            background-color: #e5e5e5;
+            margin-bottom: 12px;
+            cursor: pointer;
+            background-repeat: no-repeat;
+            background-position: center center;
+          }
+          span {
+            font-size: 15px;
+            color: #2f2f2f;
+          }
+        }
+        .off {
+          i {
+            background-color: #f5222d;
+          }
+        }
+        input[type="text"] {
+          padding: 12px 20px;
+          margin: 8px 0;
+          box-sizing: border-box;
+        }
+        button {
+          outline: none;
+          padding: 0 14px;
+          width: 100%;
+          box-sizing: border-box;
+          line-height: 39px;
+          height: 39px;
+          background-color: #4caf50;
+          border: solid 1px #3296fa;
+          color: white;
+          letter-spacing: 1px;
+          font-size: 22px;
+          border-radius: 3.5px;
+          cursor: pointer;
+        }
       }
-    }
-    .function {
-      display: flex;
-      div {
-        margin: 0 13px;
+      .nsetting {
+        visibility: hidden;
+        margin-right: 34px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         i {
-          width: 120px;
-          height: 48px;
-          border-radius: 24px;
-          background-color: #e5e5e5;
-          margin-bottom: 12px;
-          cursor: pointer;
+          width: 32px;
+          height: 32px;
+          display: block;
           background-repeat: no-repeat;
           background-position: center center;
+          margin-bottom: 12px;
+          cursor: pointer;
+        }
+      }
+    }
+    .shadow {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      .leaveShadow {
+        width: 308px;
+        height: 216px;
+        position: fixed;
+        z-index: 100;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 65px 30px 36px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        p {
+          text-align: center;
+          color: #111111;
+        }
+        div {
+          display: flex;
+          justify-content: space-between;
         }
         span {
-          font-size: 15px;
-          color: #2f2f2f;
+          width: 111px;
+          height: 40px;
+          border: 1px solid rgba(0, 0, 0, 0.76);
+          border-radius: 2.5px;
+          display: inline-block;
+          text-align: center;
+          line-height: 40px;
+          cursor: pointer;
         }
-      }
-      .off {
-        i {
-          background-color: #f5222d;
+        .goBack {
+          border: none;
+          color: #ffffff;
+          background: #3296fa;
         }
       }
     }
-    .nsetting {
-      visibility: hidden;
-      margin-right: 34px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      i {
-        width: 32px;
-        height: 32px;
-        display: block;
-        background-repeat: no-repeat;
-        background-position: center center;
-        margin-bottom: 12px;
-        cursor: pointer;
-      }
-    }
-  }
-  .shadow {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    .leaveShadow {
-      width: 308px;
-      height: 216px;
+    .screenToast {
+      width: 288px;
+      height: 91px;
+      background: #111;
+      opacity: 0.9;
       position: fixed;
-      z-index: 100;
-      top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      background: #ffffff;
-      border-radius: 8px;
-      padding: 65px 30px 36px;
+      margin-left: -144px;
+      top: 12px;
+      border-radius: 4px;
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      p {
-        text-align: center;
-        color: #111111;
-      }
-      div {
-        display: flex;
-        justify-content: space-between;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      i {
+        width: 18px;
+        height: 18px;
+        background: red;
+        border-radius: 50%;
+        margin-right: 16px;
       }
       span {
-        width: 111px;
-        height: 40px;
-        border: 1px solid rgba(0, 0, 0, 0.76);
-        border-radius: 2.5px;
-        display: inline-block;
-        text-align: center;
-        line-height: 40px;
-        cursor: pointer;
-      }
-      .goBack {
-        border: none;
-        color: #ffffff;
-        background: #3296fa;
+        color: #fff;
+        font-size: 20px;
       }
     }
   }
-  .screenToast {
-    width: 288px;
-    height: 91px;
-    background: #111;
-    opacity: 0.9;
-    position: fixed;
-    left: 50%;
-    margin-left: -144px;
-    top: 12px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-    i {
-      width: 18px;
-      height: 18px;
-      background: red;
-      border-radius: 50%;
-      margin-right: 16px;
+  .fullScreen {
+    .header {
+      display: none;
     }
-    span {
-      color: #fff;
-      font-size: 20px;
-    }
-  }
-}
-.fullScreen {
-  .header {
-    display: none;
-  }
-  .container {
-    top: 0;
-    bottom: 0;
-    .container-box {
-      width: 100%;
-      i {
-        bottom: 148px;
+    .container {
+      top: 0;
+      bottom: 0;
+      .container-box {
+        width: 100%;
+        i {
+          bottom: 148px;
+        }
       }
-    }
-    .container-memberVideo {
-      position: absolute;
-      right: 0;
-      .memberContainer {
-        height: 420px;
-        top: 15%;
-        .memberTab {
-          width: 24px;
-          height: 72px;
-          position: absolute;
-          right: 209px;
-          border-width: 12px;
-          border-color: transparent #ffffff transparent transparent;
-          border-style: solid;
-          top: 42%;
-          float: left;
-          cursor: pointer;
-          i {
-            line-height: 48px;
-            font-weight: 800;
+      .container-memberVideo {
+        position: absolute;
+        right: 0;
+        .memberContainer {
+          height: 420px;
+          top: 15%;
+          .memberTab {
+            width: 24px;
+            height: 72px;
+            position: absolute;
+            right: 209px;
+            border-width: 12px;
+            border-color: transparent #ffffff transparent transparent;
+            border-style: solid;
+            top: 42%;
+            float: left;
+            cursor: pointer;
+            i {
+              line-height: 48px;
+              font-weight: 800;
+            }
           }
         }
       }
-    }
-    .hideright {
-      .memberContainer {
-        position: fixed;
-        right: -209px;
+      .hideright {
+        .memberContainer {
+          position: fixed;
+          right: -209px;
+        }
       }
-    }
-    .showright {
-      .memberContainer {
-        position: fixed;
-        right: 0;
+      .showright {
+        .memberContainer {
+          position: fixed;
+          right: 0;
+        }
       }
     }
   }
-}
-.transform {
-  transform: rotateY(180deg);
-  -webkit-transform: rotateY(180deg);
-  -moz-transform: rotateY(180deg);
-}
+  .transform {
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+  }
 </style>
