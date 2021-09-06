@@ -14,7 +14,7 @@ module.exports = {
         host: '0.0.0.0',
         hot:true,
         https: true, // https:{type:Boolean}
-        open: true,//配置自动启动浏览器
+        open: true,//配置自动启动浏览器(브라우저를 자동으로 시작하도록 구성)
         proxy: {
           '/interactive-live-class': {
             target: 'https://alivc-demo.aliyuncs.com',

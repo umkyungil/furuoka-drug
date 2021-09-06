@@ -211,7 +211,6 @@ export default {
         }
       });
     },
-    // 휴가는 돌아올 것이다
     goBack() {
       Utils.exitRoom();
     },
@@ -445,10 +444,12 @@ export default {
       background: #f8f8f8;
       display: flex;
       justify-content: space-between;
+      flex-wrap: wrap;  // 井上
       .logo {
         display: flex;
         align-items: center;
-        margin-left: 7px;
+        // margin-left: 7px; 井上
+        flex-wrap: wrap; // 井上
         i {
           font-size: 40px;
           margin: 0 5px;
@@ -459,8 +460,14 @@ export default {
       }
       .function {
         display: flex;
+
+        // 井上
+        flex-wrap: wrap;
+        background: #f8f8f8;
+        align-items: center;
         div {
-          margin: 0 13px;
+          // margin: 0 13px; 井上
+          margin: 10px 13px; // 井上
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -650,4 +657,58 @@ export default {
     -webkit-transform: rotateY(180deg);
     -moz-transform: rotateY(180deg);
   }
+
+// 井上
+@media (max-width: 768px) {
+  .rtc-demo .footer{
+    bottom: auto;
+  }
+  .user-list {
+    padding: 0 0;
+  }
+  .user-list .list-video {
+    height: auto;
+    // kium
+    padding: 0 0;
+  }
+  // kium start
+  ::-webkit-scrollbar {
+    /* width: 5px; */
+    height: 0px;
+  }
+
+  #localVideo {
+    width: 100%;
+    height: 380px;
+  }
+  .rtc-demo .footer .function div i{
+    width: 60px;
+    height: 48px;
+  }
+   .user-list .title {
+    display: none
+  }
+  .rtc-demo .footer .function .screenShare {
+    display: none
+  }
+  .rtc-demo .footer .function .muteAll {
+    display: none
+  }
+  // kium end
+  .rtc-demo .container .container-memberVideo .memberContainer {
+    width: 100%;
+    padding: 10px 0px 0px 0px;
+  }
+  .rtc-demo .container .container-box {
+    width: 100%;
+  }
+  .rtc-demo .container {
+    position: inherit;
+    display: block;
+  }
+  .user-list {
+    width: 100%;
+    height: auto;
+  }
+}
 </style>
