@@ -24,7 +24,7 @@
     </div>
     <div class="footer">
       <div class="logo">
-        <i class="iconfont icon-rtcyinshipintongxin"></i><span>古冈药业</span>
+        <i class="iconfont icon-rtcyinshipintongxin"></i><span>古冈药妆</span>
       </div>
 
       <div class="function">
@@ -54,7 +54,21 @@
         <!-- 合計 -->
         <div>
           <span>
-            合計：<input type="text" id="name" name="price" size="10" v-model="amount" v-on:keyup.enter="submit" placeholder="Enter the amount"/>
+            <form action="https://gw.ccps.jp/payment.aspx" method="get">
+              <input type="hidden" name="sid" value="110106"><!-- 店舗ID-->
+              <input type="hidden" name="svid" value="23">
+              <input type="hidden" name="ptype" value="8">
+              <input type="hidden" name="job" value="REQUEST">
+              <input type="hidden" name="lang" value="cn">
+              <input type="hidden" name="sod" value="オーダー番号">
+              <input type="hidden" name="method" value="QR">
+              <input type="hidden" name="sinm1" value="商品名">
+              合計：<input type="text" id="name" name="siam1" size="10" v-model="amount" v-on:keyup.enter="submit" placeholder="Enter the amount"/>
+              <!-- <input type="txt" name="siam1" value="1000"> -->
+              <input type="hidden" name="sisf1" value="500">
+            </form>
+          
+            
           </span>
         </div>
         <div>
@@ -659,56 +673,72 @@ export default {
   }
 
 // 井上
-@media (max-width: 768px) {
-  .rtc-demo .footer{
-    bottom: auto;
-  }
-  .user-list {
-    padding: 0 0;
-  }
-  .user-list .list-video {
-    height: auto;
-    // kium
-    padding: 0 0;
-  }
-  // kium start
-  ::-webkit-scrollbar {
-    /* width: 5px; */
-    height: 0px;
-  }
+  @media (max-width: 768px) {
+    .member-content .user-list
+    .rtc-demo .footer{
+      bottom: auto;
+    }
+    .member-content .user-list {
+      padding: 0 0;
+    }
+    .member-content {
+      height: auto; //calc(100% - 65px);
+    }
+    .user-list .list-video {
+      height: auto;
 
-  #localVideo {
-    width: 100%;
-    height: 380px;
+      // kium
+      //padding: 0 0;
+      display: flex;
+      flex-flow: row nowrap;
+      //flex-direction: row;
+      //flex-wrap: wrap;
+
+
+    }
+    
+
+    // kium start
+    // .user-list .list-video .nui-video-div {
+    //   margin-bottom: 0px;
+    //   width: 0vh;
+   //}
+    .user-list .list-video li {
+      width: 100%;
+      border: 1px solid black;
+    }
+    ::-webkit-scrollbar {
+      height: 0px;
+    }
+    #localVideo {
+      width: 100%;
+      height: 330px;
+    }
+    .rtc-demo .footer .function div i{
+      width: 60px;
+      height: 48px;
+    }
+    .user-list .title {
+      display: none;
+    }
+    .rtc-demo .footer .function .screenShare {
+      display: none
+    }
+    .rtc-demo .footer .function .muteAll {
+      display: none
+    }
+    // kium end
+    .rtc-demo .container .container-memberVideo .memberContainer {
+      width: 100%;
+      // kium add
+      padding: 10px 0px 0px 0px;
+    }
+    .rtc-demo .container .container-box {
+      width: 100%;
+    }
+    .rtc-demo .container {
+      position: inherit;
+      display: block;
+    }
   }
-  .rtc-demo .footer .function div i{
-    width: 60px;
-    height: 48px;
-  }
-   .user-list .title {
-    display: none
-  }
-  .rtc-demo .footer .function .screenShare {
-    display: none
-  }
-  .rtc-demo .footer .function .muteAll {
-    display: none
-  }
-  // kium end
-  .rtc-demo .container .container-memberVideo .memberContainer {
-    width: 100%;
-    padding: 10px 0px 0px 0px;
-  }
-  .rtc-demo .container .container-box {
-    width: 100%;
-  }
-  .rtc-demo .container {
-    position: inherit;
-    display: block;
-  }
-  .user-list {
-    width: 100%;
-    height: auto;
-  }
-}
 </style>
