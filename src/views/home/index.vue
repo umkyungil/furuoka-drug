@@ -255,7 +255,7 @@ export default {
     // push screen stream
     publishScreen() {
       if (!this.$store.state.data.isPublish) {
-        Util.toast("Unreject"); // 未推流
+        Util.toast("未推流"); // 未推流
         return false;
       }
       if (this.$store.state.data.isPublishScreen) {
@@ -673,53 +673,42 @@ export default {
   }
 
 // 井上
+// 井上
   @media (max-width: 768px) {
-    .member-content .user-list
     .rtc-demo .footer{
       bottom: auto;
     }
-    .member-content .user-list {
+    .user-list {
       padding: 0 0;
-    }
-    .member-content {
-      height: auto; //calc(100% - 65px);
     }
     .user-list .list-video {
       height: auto;
-
-      // kium
-      //padding: 0 0;
-      display: flex;
-      flex-flow: row nowrap;
-      //flex-direction: row;
-      //flex-wrap: wrap;
-
-
+      padding: 0 0;
+      flex-wrap: wrap; // 20210907
+      display: flex;   // 20210907
+      justify-content: space-evenly;  // 20210907
     }
     
-
     // kium start
-    // .user-list .list-video .nui-video-div {
-    //   margin-bottom: 0px;
-    //   width: 0vh;
-   //}
-    .user-list .list-video li {
-      width: 100%;
-      border: 1px solid black;
-    }
     ::-webkit-scrollbar {
+      /* width: 5px; */
       height: 0px;
     }
     #localVideo {
       width: 100%;
-      height: 330px;
     }
     .rtc-demo .footer .function div i{
       width: 60px;
       height: 48px;
     }
+    // .user-list .list-video li {
+    //   border: 1px solid black;
+    // }
     .user-list .title {
       display: none;
+    }
+    .rtc-demo .footer .nsetting {
+      display: none
     }
     .rtc-demo .footer .function .screenShare {
       display: none
@@ -730,15 +719,19 @@ export default {
     // kium end
     .rtc-demo .container .container-memberVideo .memberContainer {
       width: 100%;
-      // kium add
       padding: 10px 0px 0px 0px;
     }
     .rtc-demo .container .container-box {
       width: 100%;
+      background: #ffff; // 20210907
     }
     .rtc-demo .container {
       position: inherit;
       display: block;
+    }
+    .user-list {
+      width: 100%;
+      height: auto;
     }
   }
 </style>
