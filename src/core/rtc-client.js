@@ -41,7 +41,7 @@ export default class RTCClient {
         }, 2);
     }
     /**
-     * 获取实例
+     * 获取实例 인스턴스 가져오기
      */
     static get instance() {
         if (!RTCClient._instance) {
@@ -50,13 +50,13 @@ export default class RTCClient {
         return RTCClient._instance;
     }
     /**
-     * 获取是否在频道中
+     * 获取是否在频道中 채널에 있는지 확인
      */
     get isInCall() {
         return this._isInCall;
     }
     /**
-    * 获取是否在推流
+    * 获取是否在推流 밀고 있는지 확인
     */
     get isPublish() {
         return this._isPublish;
@@ -214,7 +214,7 @@ export default class RTCClient {
         }
     }
     /**
-     * 加入房间
+     * 加入房间 방에 참여
      */
     login(channel,userName) {
         return new Promise((resolve, reject) => {
@@ -765,7 +765,7 @@ export default class RTCClient {
         return arr;
     }
     /**
-     * 获取鉴权信息
+     * 获取鉴权信息 인증 정보 얻기
      */
     _getAuthInfo(channel,userName) {
         return new Promise((resolve, reject) => {
@@ -780,7 +780,7 @@ export default class RTCClient {
         })
     }
     /**
-     * 删除用户mute状态
+     * 删除用户mute状态 사용자 음소거 상태 삭제
      * @param {*} userId 
      */
     _deleteUserMuteState(userId) {
@@ -852,7 +852,7 @@ export default class RTCClient {
      */
     _handleEvents() {
         /**
-        * 远端用户上线通知
+        * 远端用户上线通知 원격 사용자 온라인 알림
         */
         this._clinet.on("onJoin", (data) => {
             console.warn("onJoin", data);
@@ -861,7 +861,7 @@ export default class RTCClient {
             }
         })
         /**
-        * 远端用户推流通知
+        * 远端用户推流通知 원격 사용자의 푸시 알림
         */
         this._clinet.on("onPublisher", (publisher) => {
             console.warn("onPublisher", publisher);
@@ -871,7 +871,7 @@ export default class RTCClient {
             }
         })
         /**
-        * 远端用户停止推流通知
+        * 远端用户停止推流通知 원격 사용자의 푸시 중지 알림
         */
         this._clinet.on("onUnPublisher", (publisher) => {
             console.warn("onUnPublisher", publisher);
@@ -936,7 +936,7 @@ export default class RTCClient {
             }
         })
         /**
-         * 被服务器踢出或者频道关闭时回调
+         * 被服务器踢出或者频道关闭时回调 서버에 의해 쫓겨나거나 채널이 닫힐 때 콜백
          */
         this._clinet.on("onBye", (data) => {
             console.warn("onBye", data);
@@ -948,7 +948,7 @@ export default class RTCClient {
             }
         })
         /**
-         * 远端离开频道回调
+         * 远端离开频道回调 원격으로 채널을 떠날 때 콜백
          */
         this._clinet.on("onLeave", (data) => {
             console.warn("onLeave", data);

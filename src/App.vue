@@ -5,15 +5,15 @@
 </template>
 
 <script>
+
 export default {
-  data(){
+    data(){
     return{
     }
   },
   name: "app",
   components: {},
-  created() { 
-  }
+  created() {}
 };
 </script>
 
@@ -26,5 +26,11 @@ export default {
 }
 .mirrorMode{
   transform: rotateY(180deg);
+}
+.body {
+  background: #F6F6F6;
+}
+.shadow {
+  box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03);
 }
 </style>

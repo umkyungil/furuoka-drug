@@ -1,8 +1,8 @@
 <template>
   <div class="rtc-demo" :class="isFullScreen ? 'fullScreen' : ''">
     <div class="header" v-show="$store.state.data.classNum">
-      <span @click="hCopy" id="channel">Meeting code：{{ $store.state.data.classNum }}</span>
-      <span>&nbsp;Nick name：{{ $store.state.data.userName }}</span>
+      <span @click="hCopy" id="channel">会议代码：{{ $store.state.data.classNum }}</span>
+      <span>&nbsp;昵称：{{ $store.state.data.userName }}</span>
     </div>
     <div class="container">
       <div class="container-box">
@@ -21,64 +21,74 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="footer">
-      <div class="logo">
-        <i class="iconfont icon-rtcyinshipintongxin"></i><span>古冈药妆</span>
+
+      <div class="form-popup" id="wechatForm">
+        <form class="form-container">
+          <h2>Wechat</h2>
+          <input id="wechat_amount" type="text" placeholder="请输入总金额" required>
+          <button type="button" class="btn" @click="wechatSubmit()">你想用微信支付吗?</button>
+          <button type="button" class="btn cancel" @click="wechatClose()">Close</button>
+        </form>
+      </div>
+      <div class="form-popup" id="alipayForm">
+        <form class="form-container">
+          <h2>Alipay</h2>
+          <input id="alipay_amount" type="text" placeholder="请输入总金额" required>
+          <button type="button" class="btn" @click="alipaySubmit()">您想用支付宝付款吗?</button>
+          <button type="button" class="btn cancel" @click="alipayClose()">Close</button>
+        </form>
       </div>
 
+    </div>
+    <div align="center" class="footer">
+      <!-- 로고  
+      <div class="logo">
+        <i class="iconfont icon-rtcyinshipintongxin"></i><span>古冈药妆</span>
+      </div> -->
       <div class="function">
         <div class="mic">
           <i @click="muteLocalMic" :style=" this.audio ? 'background-image:url(' + micUrl + ')' : 'background-image:url(' + micOnUrl + ')'"></i>
-          <span>Mute</span><!-- 静音 -->
+          <span>静音</span><!--  Mute-->
         </div>
         <div class="camera">
           <i @click="muteLocalCamera" :style=" this.video ? 'background-image:url(' + cameraUrl + ')' : 'background-image:url(' + cameraOnUrl + ')'"></i>
-          <span>Camera</span><!-- 摄像头-->
+          <span>摄像头</span><!-- Camera-->
         </div>
         <div class="off">
           <i @click="leaveShadow = true" :style="'background-image:url(' + offUrl + ')'" ></i>
-          <span>Leave the meeting</span><!-- 离开会议-->
+          <span>离开会议</span><!--Leave the meeting -->
         </div>
         <div class="screenShare">
           <i @click="publishScreen" 
             :style="!this.$store.state.data.isPublishScreen ? 'background-image:url(' + screenUrl + ')': 'background-image:url(' + screenOnUrl + ')'">
           </i>
-          <span>Share screen</span><!-- 共享屏幕-->
+          <span>共享屏幕</span><!-- Share screen-->
         </div>
+        
+        <!-- 전체 음소거 
         <div class="muteAll">
           <i @click="muteAll" :style="!this.muteAllState ? 'background-image:url(' + muteAllUrl + ')' : 'background-image:url(' + muteAllOnUrl + ')'"></i>
-          <span>Mute all staff</span><!--全员静音 -->
+          <span>全员静音</span>
+        </div> -->
+        <div class="chat">
+          <i @click="chat()" :style="'background-image:url(' + chatUrl +   ')'" ></i>
+          <span>聊天</span>
         </div>
-
-        <!-- 合計 -->
-        <div>
-          <span>
-            <form action="https://gw.ccps.jp/payment.aspx" method="get">
-              <input type="hidden" name="sid" value="110106"><!-- 店舗ID-->
-              <input type="hidden" name="svid" value="23">
-              <input type="hidden" name="ptype" value="8">
-              <input type="hidden" name="job" value="REQUEST">
-              <input type="hidden" name="lang" value="cn">
-              <input type="hidden" name="sod" value="オーダー番号">
-              <input type="hidden" name="method" value="QR">
-              <input type="hidden" name="sinm1" value="商品名">
-              合計：<input type="text" id="name" name="siam1" size="10" v-model="amount" v-on:keyup.enter="submit" placeholder="Enter the amount"/>
-              <!-- <input type="txt" name="siam1" value="1000"> -->
-              <input type="hidden" name="sisf1" value="500">
-            </form>
-          
-            
-          </span>
+        <!-- 合計 --> 
+        <div class="wechatBtn">
+          <i @click="wechatOpen()" :style="'background-image:url(' + wechatUrl +   ')'" ></i>
+          <span>WechatPay</span>
         </div>
-        <div>
-          <button @click="submit()">決済</button>
+        <div class="alipayBtn">
+          <i @click="alipayOpen()" :style="'background-image:url(' + alipayUrl +   ')'" ></i>
+          <span>aliPay</span>
         </div>
       </div>
-      <div class="nsetting">
+      <!-- 환경설정 
+        <div class="nsetting">
         <el-popover placement="top" width="247" trigger="click">
           <div>
-            <span style="font-size: 12px">下次加入会议自动触发</span><!-- 다음에 회의에 참가할 때 자동으로 트리거 -->
+            <span style="font-size: 12px">下次加入会议自动触发</span> 다음에 회의에 참가할 때 자동으로 트리거 
             <br />
             <hr />
             <br />
@@ -86,22 +96,20 @@
             <el-switch active-color="#016EFF" v-model="preSetMic"> </el-switch>
             <br />
             <br />
-            <span style="margin-right:20px">打开自己的摄像头</span><!-- 나만의 마이크 켜기 -->
+            <span style="margin-right:20px">打开自己的摄像头</span> 나만의 마이크 켜기 
             <el-switch active-color="#016EFF" v-model="preSetCamera"></el-switch>
           </div>
           <i slot="reference" :style="'background-image:url(' + settingUrl + ')'"></i>
         </el-popover>
         <span>设置</span>
-      </div>
+      </div> -->
     </div>
     <div v-show="leaveShadow" class="shadow">
       <div class="leaveShadow">
-        <p>Do you want to end the meeting?</p>
-        <!-- 你想要结束会议吗？-->
+        <p>你想要结束会议吗？</p>
         <div>
-          <span @click="leaveShadow = false">Cancel</span>
-          <span class="goBack" @click="goBack">Yes</span
-          ><!--结束会议-->
+          <span @click="leaveShadow = false">取消</span>
+          <span class="goBack" @click="goBack">结束会议</span>
         </div>
       </div>
     </div>
@@ -118,15 +126,21 @@ import cameraUrl from "../../assets/icon/camera.png";
 import cameraOnUrl from "../../assets/icon/camera-on.png";
 import screenUrl from "../../assets/icon/screen.png";
 import screenOnUrl from "../../assets/icon/screen-on.png";
-import muteAllUrl from "../../assets/icon/muteall.png";
-import muteAllOnUrl from "../../assets/icon/muteall-on.png";
+// import muteAllUrl from "../../assets/icon/muteall.png";
+// import muteAllOnUrl from "../../assets/icon/muteall-on.png";
 import fullUrl from "../../assets/icon/full.png";
 import fullOnUrl from "../../assets/icon/full-on.png";
 import settingUrl from "../../assets/icon/setting.png";
 import micListUrl from "../../assets/icon/micList.png";
 import micListOffUrl from "../../assets/icon/micList-off.png";
+import userlist from '../../components/userlist.vue';
+
+import chatUrl from "../../assets/icon/chat2.png";
+import wechatUrl from "../../assets/icon/wechat.png";
+import alipayUrl from "../../assets/icon/alipay.png";
 
 export default {
+  components: { userlist },
   data() {
     return {
       audio: true,
@@ -135,7 +149,7 @@ export default {
       isFullScreen: false, //전체 화면 상태
       // toastVideo: "", //메인 창 상단에 표시되는 정보
       showSlide: true, //전체 화면 상태 측면 표시 상태
-      muteAllState: false, //모든 구성원은 침묵
+      // muteAllState: false, //모든 구성원은 침묵
       offUrl: offUrl,
       micUrl: micUrl,
       micOnUrl: micOnUrl,
@@ -143,8 +157,8 @@ export default {
       cameraOnUrl: cameraOnUrl,
       screenUrl: screenUrl,
       screenOnUrl: screenOnUrl,
-      muteAllUrl: muteAllUrl,
-      muteAllOnUrl: muteAllOnUrl,
+      // Url: muteAllUrl,muteAll
+      // muteAllOnUrl: muteAllOnUrl,
       fullUrl: fullUrl,
       fullOnUrl: fullOnUrl,
       settingUrl: settingUrl,
@@ -152,10 +166,13 @@ export default {
       micListOffUrl: micListOffUrl,
       preSetMic: true, //기본 마이크
       preSetCamera: true, //기본 카메라
-      amount: '',
+      chatUrl: chatUrl,
+      wechatUrl: wechatUrl,
+      alipayUrl: alipayUrl,
     };
   },
-  created() {},
+  created() {
+  },
   mounted() {
     this.$nextTick(() => {
       window.rtcClient = RTCClient.instance;
@@ -171,9 +188,9 @@ export default {
         .login(this.$store.state.data.classNum, this.$store.state.data.userName)
         .then((userId) => {
           if (RTCClient.instance.getRoomUserList().length === 0) {
-            this.$message(
-              "当前只有你一个人，你可以点击页面顶部【复制会议码】给其他参会人员"
-            );// 현재 본인만 있습니다. 페이지 상단의 [회의 코드 복사]를 클릭하여 다른 참가자에게 제공할 수 있습니다.
+            // this.$message(
+            //   "当前只有你一个人，你可以点击页面顶部【复制会议码】给其他参会人员"
+            // );
           }
           hvuex({
             isSwitchScreen: false,
@@ -282,33 +299,106 @@ export default {
     hCopy() {
       this.$message(
         Utils.hCopy("channel") ? "The meeting code has been copied" : ""
-      ); // 회의 코드가 복사되었습니다.
+      );
     },
     // 모든 멤버 음소거 켜기/끄기)
-    muteAll() {
-      this.muteAllState = !this.muteAllState;
-      if (this.muteAllState) {
-        RTCClient.instance.muteAllRemoteAudioPlaying(true);
-        this.$message("All current members have been muted"); // 모든 현재 회원이 음소거되었습니다
-      } else {
-        RTCClient.instance.muteAllRemoteAudioPlaying(false);
-        this.$message("All mute is turned off"); // 모든 음소거가 꺼져 있습니다
-      }
+    // muteAll() {
+    //   this.muteAllState = !this.muteAllState;
+    //   if (this.muteAllState) {
+    //     RTCClient.instance.muteAllRemoteAudioPlaying(true);
+    //     this.$message("所有当前成员都已被静音"); // 모든 현재 회원이 음소거되었습니다
+    //   } else {
+    //     RTCClient.instance.muteAllRemoteAudioPlaying(false);
+    //     this.$message("所有静音已关闭"); // 모든 음소거가 꺼져 있습니다
+    //   }
+    // },
+    chat() {
+      //let href = "http://localhost:8080";
+      let href = "https://umkyungil.github.io/furuoka-drug-twitter/#/";
+      let w = 450;
+      let h = 800;
+      let xPos = (document.body.offsetWidth-w); //오른쪽 정렬
+      let yPos = (document.body.offsetHeight/2) - (h/2);
+
+      window.open(href, "pop_name", "width="+w+", height="+h+", left="+xPos+", top="+yPos+", menubar=yes, status=yes, titlebar=yes, resizable=yes");
     },
-    submit() {
-      var reg = new RegExp(/^([0-9]{1,12})?$/g);
-      if (!reg.test(this.amount)) {
-        this.$message("Please enter a number");
+    wechatOpen() {
+      document.getElementById("wechatForm").style.display = "block";
+    },
+    wechatClose() {
+      document.getElementById("wechatForm").style.display = "none";
+    },
+    alipayClose() {
+      document.getElementById("alipayForm").style.display = "none";
+    },
+    alipayOpen() {
+      document.getElementById("alipayForm").style.display = "block";
+    },
+    wechatSubmit() {
+      const amount = document.getElementById("wechat_amount").value;
+      if (amount == "" || amount == undefined) {
+        this.$message("会议码格式不正确"); // Please enter a number
         return;
       }
-      alert(this.amount);
+      const reg = new RegExp(/^([0-9]{1,12})?$/g);
+      if (!reg.test(amount)) {
+        this.$message("会议码格式不正确"); // Please enter a number
+        return;
+      }
+      
+      let wechat_variable = {
+        sid: '110106',
+        svid: '23',
+        ptype: '8',
+        job: 'REQUEST',
+        rt: '4',
+        lang: 'cn',
+        siam1: amount, // 合計
+        sinm1: 'ProductName',
+        sisf1: '0',
+        method: 'QR'
+      }
 
-      /*
-      hvuex({ classNum: this.room, userName: this.displayName });
-      // 페이지 이동
-      this.$router.push("/meet");
-      */
+      let url = "https://gw.ccps.jp/payment.aspx";
+      Object.keys(wechat_variable).forEach(function(key, index) {
+        url = url + (index === 0 ? "?" : "&") + key + "=" + wechat_variable[key];
+      });
+
+      window.open(url,"wechat","toolbar=0,menubar=0,scrollbars=auto,resizable=no,height=770,width=768,top=100px,left=100");
     },
+    alipaySubmit() {
+      const amount = document.getElementById("alipay_amount").value;
+      if (amount == "" || amount == undefined) {
+        this.$message("会议码格式不正确");
+        return;
+      }
+      const reg = new RegExp(/^([0-9]{1,12})?$/g);
+      if (!reg.test(amount)) {
+        this.$message("会议码格式不正确");
+        return;
+      }
+
+      let alipay_variable = {
+        sid: '110106',
+        svid: '6',
+        ptype: '8',
+        job: 'REQUEST',
+        sod: 'test_shop_order_number',
+        em: 'umkyungil@hirosophy.co.jp',
+        tn: '07044425297',
+        lang: 'cn',
+        siam1: amount, // 合計
+        sinm1: 'ProductName',
+        sisf1: '0'
+      }
+
+      let url = "https://gw.ccps.jp/payment.aspx";
+      Object.keys(alipay_variable).forEach(function(key, index) {
+        url = url + (index === 0 ? "?" : "&") + key + "=" + alipay_variable[key];
+      });
+
+      window.open(url,"alipay","toolbar=0,menubar=0,scrollbars=auto,resizable=no,height=770,width=768,top=100px,left=100");
+    }
   },
   watch: {
     /**
@@ -330,6 +420,60 @@ export default {
 </script>
 
 <style lang="scss">
+  /* The popup form - hidden by default */
+  .form-popup {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    right: 15px;
+    border: 3px solid #f1f1f1;
+    z-index: 9;
+  }
+
+  /* Add styles to the form container */
+  .form-container {
+    max-width: 300px;
+    padding: 10px;
+    background-color: white;
+  }
+
+  /* Full-width input fields */
+  .form-container input[type=text], .form-container input[type=password] {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    border: none;
+    background: #f1f1f1;
+  }
+
+  /* When the inputs get focus, do something */
+  .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+    background-color: #ddd;
+    outline: none;
+  }
+
+  /* Set a style for the submit/login button */
+  .form-container .btn {
+    background-color: #04AA6D;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom:10px;
+    opacity: 0.8;
+  }
+
+  /* Add a red background color to the cancel button */
+  .form-container .cancel {
+    background-color: red;
+  }
+
+  /* Add some hover effects to buttons */
+  .form-container .btn:hover {
+    opacity: 1;
+  }
+
   .rtc-demo {
     .header {
       position: absolute;
@@ -457,21 +601,21 @@ export default {
       width: 100%;
       background: #f8f8f8;
       display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;  // 井上
-      .logo {
-        display: flex;
-        align-items: center;
-        // margin-left: 7px; 井上
-        flex-wrap: wrap; // 井上
-        i {
-          font-size: 40px;
-          margin: 0 5px;
-        }
-        span {
-          font-size: 16px;
-        }
-      }
+      justify-content: space-evenly;
+      flex-wrap: wrap;  // add 20210904
+      // .logo {
+      //   display: flex;
+      //   align-items: center;
+      //   margin-left: 7px;
+      //   flex-wrap: wrap;
+      //   i {
+      //     font-size: 40px;
+      //     margin: 0 5px;
+      //   }
+      //   span {
+      //     font-size: 16px;
+      //   }
+      // }
       .function {
         display: flex;
 
@@ -480,8 +624,8 @@ export default {
         background: #f8f8f8;
         align-items: center;
         div {
-          // margin: 0 13px; 井上
-          margin: 10px 13px; // 井上
+          // margin: 0 13px; add 20210904
+          margin: 10px 13px; // add 20210904
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -490,7 +634,7 @@ export default {
             width: 120px;
             height: 48px;
             border-radius: 24px;
-            background-color: #e5e5e5;
+            // background-color: #e5e5e5; // 버튼 배경색
             margin-bottom: 12px;
             cursor: pointer;
             background-repeat: no-repeat;
@@ -510,40 +654,42 @@ export default {
           padding: 12px 20px;
           margin: 8px 0;
           box-sizing: border-box;
+          border: 2px solid;
+          border-radius: 4px;
         }
-        button {
-          outline: none;
-          padding: 0 14px;
-          width: 100%;
-          box-sizing: border-box;
-          line-height: 39px;
-          height: 39px;
-          background-color: #4caf50;
-          border: solid 1px #3296fa;
-          color: white;
-          letter-spacing: 1px;
-          font-size: 22px;
-          border-radius: 3.5px;
-          cursor: pointer;
-        }
+        // button {
+        //   padding: 0 14px;
+        //   width: 100%;
+        //   box-sizing: border-box;
+        //   line-height: 39px;
+        //   height: 39px;
+        //   background-color: #4caf50;
+        //   border: solid 1px #3296fa;
+        //   color: white;
+        //   letter-spacing: 1px;
+        //   font-size: 22px;
+        //   border-radius: 3.5px;
+        //   cursor: pointer;
+        // }
       }
-      .nsetting {
-        visibility: hidden;
-        margin-right: 34px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        i {
-          width: 32px;
-          height: 32px;
-          display: block;
-          background-repeat: no-repeat;
-          background-position: center center;
-          margin-bottom: 12px;
-          cursor: pointer;
-        }
-      }
+      // 환경설정
+      // .nsetting {
+      //   visibility: hidden;
+      //   margin-right: 34px;
+      //   display: flex;
+      //   flex-direction: column;
+      //   justify-content: center;
+      //   align-items: center;
+      //   i {
+      //     width: 32px;
+      //     height: 32px;
+      //     display: block;
+      //     background-repeat: no-repeat;
+      //     background-position: center center;
+      //     margin-bottom: 12px;
+      //     cursor: pointer;
+      //   }
+      // }
     }
     .shadow {
       width: 100%;
@@ -672,8 +818,7 @@ export default {
     -moz-transform: rotateY(180deg);
   }
 
-// 井上
-// 井上
+// add 20210904
   @media (max-width: 768px) {
     .rtc-demo .footer{
       bottom: auto;
@@ -684,16 +829,16 @@ export default {
     .user-list .list-video {
       height: auto;
       padding: 0 0;
-      flex-wrap: wrap; // 20210907
-      display: flex;   // 20210907
-      justify-content: space-evenly;  // 20210907
+      flex-wrap: wrap;
+      display: flex;
+      justify-content: space-evenly;
     }
-    
-    // kium start
+    // modified 20210906
     ::-webkit-scrollbar {
       /* width: 5px; */
       height: 0px;
     }
+    // add 20210906
     #localVideo {
       width: 100%;
     }
@@ -701,19 +846,13 @@ export default {
       width: 60px;
       height: 48px;
     }
-    // .user-list .list-video li {
-    //   border: 1px solid black;
-    // }
     .user-list .title {
       display: none;
     }
-    .rtc-demo .footer .nsetting {
+    .screenShare {
       display: none
     }
-    .rtc-demo .footer .function .screenShare {
-      display: none
-    }
-    .rtc-demo .footer .function .muteAll {
+    .function { //.muteAll {
       display: none
     }
     // kium end
@@ -723,7 +862,7 @@ export default {
     }
     .rtc-demo .container .container-box {
       width: 100%;
-      background: #ffff; // 20210907
+      background: #ffff; // add 20210907
     }
     .rtc-demo .container {
       position: inherit;

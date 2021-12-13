@@ -5,39 +5,15 @@
         <i class="iconfont icon-rtcyinshipintongxin"></i>
         <span>古冈药业</span>
       </div>
-      <div class="main-input">
-        <input
-          type="text"
-          placeholder="user name"
-          v-model="displayName"
-        /><!-- 请输入用户名 -->
-        <input
-          type="text"
-          autocomplete="off"
-          placeholder="meeting code"
-          v-model="room"
-          id="channel"
-        /><!-- 请输入会议码 -->
-        <button
-          class="hui hui-btn"
-          :disabled="room.length == 0 && displayName"
-          @click="submit()"
-        >
-          Join
-        </button>
+      <div class="main-input shadow">
+        <input type="text" placeholder="请输入用户名" v-model="displayName"/><!-- 사용자 이름을 입력하십시오-->
+        <input type="text" autocomplete="off" placeholder="请输入会议码" v-model="room" id="channel"/><!-- 회의 코드를 입력하세요-->
+        <button class="hui hui-btn" :disabled="room.length == 0 && displayName" @click="submit()">加入</button>
       </div>
       <div class="main-button">
-        <button
-          type="button"
-          :disabled="room.length > 0 || displayName.length === 0"
-          @click="
-            room = Math.random()
-              .toFixed(5)
-              .slice(-5)
-          "
-        >
-          Create</button
-        ><!-- 创建会议-->
+        <button type="button" :disabled="room.length > 0 || displayName.length === 0" @click=" room = Math.random().toFixed(5).slice(-5)">
+          创建会议
+        </button>
       </div>
     </div>
   </div>
@@ -61,11 +37,11 @@ export default {
     submit() {
       var reg = new RegExp(/^([0-9]{1,12})?$/g);
       if (!reg.test(this.room)) {
-        this.$message("Please enter a number within 12 digits"); // 会议码格式不正确，请输入12位以内纯数字
+        this.$message("会议码格式不正确，请输入12位以内纯数字"); // Please enter a number within 12 digits
         return;
       }
       hvuex({ classNum: this.room, userName: this.displayName });
-      // 跳转页面
+      // 跳转页面(페이지 이동)
       this.$router.push("/meet");
     },
   },
@@ -89,9 +65,9 @@ export default {
     margin-left: 200px;
   }
   .main {
-    width: 550px;
+    width: 500px;
     background-color: #fff;
-    padding: 58px 110px;
+    padding: 30px 40px; //  58px 110px;
     border-radius: 8px;
     box-sizing: border-box;
     position: absolute;

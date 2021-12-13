@@ -53,6 +53,4 @@ export default class Http {
       channel: channelId
     };
   }
-
-
 }

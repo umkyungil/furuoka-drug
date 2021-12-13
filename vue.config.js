@@ -29,5 +29,5 @@ module.exports = {
         data: fs.readFileSync('src/assets/scss/base.scss', 'utf-8')
       }
     }
-  }
+  },
 }

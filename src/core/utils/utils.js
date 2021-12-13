@@ -49,7 +49,7 @@ export default class Util {
         }
     }
     /**
-  * 获取浏览器地址栏参数
+  * 获取浏览器地址栏参数 브라우저 주소 표시줄 매개변수 가져오기
   * @param {*} url 
   * @param {*} name 
   */
@@ -66,7 +66,7 @@ export default class Util {
         }
     }
     /**
-     * 退出房间
+     * 退出房间 방 나가기
      */
     static exitRoom() {
         RTCClient.instance
@@ -77,7 +77,7 @@ export default class Util {
             });
     }
     /**
-     * 开始预览
+     * 开始预览 미리보기 시작
      */
     static startPreview(view) {
         return new Promise((resolve,reject)=>{
