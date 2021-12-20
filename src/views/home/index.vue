@@ -314,7 +314,7 @@ export default {
     // },
     chat() {
       //let href = "http://localhost:8080";
-      let href = "https://umkyungil.github.io/furuoka-drug-twitter/#/";
+      let href = "https://umkyungil.github.io/furuokadrug-twitter/#/";
       let w = 450;
       let h = 800;
       let xPos = (document.body.offsetWidth-w); //오른쪽 정렬
