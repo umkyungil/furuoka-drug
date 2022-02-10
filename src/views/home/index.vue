@@ -313,14 +313,16 @@ export default {
     //   }
     // },
     chat() {
+      
+      alert("由于网络故障，它暂时不可用");
       //let href = "http://localhost:8080";
-      let href = "https://umkyungil.github.io/furuokadrug-twitter/#/";
-      let w = 450;
-      let h = 800;
-      let xPos = (document.body.offsetWidth-w); //오른쪽 정렬
-      let yPos = (document.body.offsetHeight/2) - (h/2);
+      // let href = "https://umkyungil.github.io/furuokadrug-twitter/#/";
+      // let w = 450;
+      // let h = 800;
+      // let xPos = (document.body.offsetWidth-w); //오른쪽 정렬
+      // let yPos = (document.body.offsetHeight/2) - (h/2);
 
-      window.open(href, "pop_name", "width="+w+", height="+h+", left="+xPos+", top="+yPos+", menubar=yes, status=yes, titlebar=yes, resizable=yes");
+      // window.open(href, "pop_name", "width="+w+", height="+h+", left="+xPos+", top="+yPos+", menubar=yes, status=yes, titlebar=yes, resizable=yes");
     },
     wechatOpen() {
       document.getElementById("wechatForm").style.display = "block";
@@ -337,14 +339,23 @@ export default {
     wechatSubmit() {
       const amount = document.getElementById("wechat_amount").value;
       if (amount == "" || amount == undefined) {
-        this.$message("会议码格式不正确"); // Please enter a number
+        this.$message("会议码格式不正确"); // 숫자를 입력해 주십시요
         return;
       }
       const reg = new RegExp(/^([0-9]{1,12})?$/g);
       if (!reg.test(amount)) {
-        this.$message("会议码格式不正确"); // Please enter a number
+        this.$message("会议码格式不正确"); // 숫자를 입력해 주십시요
         return;
       }
+
+      // unique field를 사용자 이름과 클래스 넘버조합으로 생성
+      const classNum = this.$store.state.data.classNum;
+      const userName = this.$store.state.data.userName;      
+      const uniqueField = classNum + '_' + userName;
+      console.log("unique: ", uniqueField);
+
+      var date = new Date();
+      const sod = date.toISOString();      
       
       let wechat_variable = {
         sid: '110106',
@@ -352,11 +363,13 @@ export default {
         ptype: '8',
         job: 'REQUEST',
         rt: '4',
+        sod: sod, // 決済結果としてもらえる項目なので「日付」を設定
         lang: 'cn',
-        siam1: amount, // 合計
-        sinm1: 'ProductName',
-        sisf1: '0',
-        method: 'QR'
+        siam1: amount, // 商品金額
+        sinm1: 'Furuokadrug Product',
+        sisf1: '0', // 送料
+        method: 'QR',
+        uniqueField: uniqueField // unique field
       }
 
       let url = "https://gw.ccps.jp/payment.aspx";
@@ -378,18 +391,26 @@ export default {
         return;
       }
 
+      // unique field를 사용자 이름과 클래스 넘버조합으로 생성
+      const classNum = this.$store.state.data.classNum;
+      const userName = this.$store.state.data.userName;      
+      const uniqueField = classNum + '_' + userName;
+      console.log("unique: ", uniqueField);
+
+      var date = new Date();
+      const sod = date.toISOString();      
+
       let alipay_variable = {
-        sid: '110106',
-        svid: '6',
-        ptype: '8',
-        job: 'REQUEST',
-        sod: 'test_shop_order_number',
-        em: 'umkyungil@hirosophy.co.jp',
-        tn: '07044425297',
-        lang: 'cn',
-        siam1: amount, // 合計
-        sinm1: 'ProductName',
-        sisf1: '0'
+        'sid': '110106',
+        'svid': '6',
+        'ptype': '8',
+        'job': 'REQUEST',
+        'sod': sod, // 決済結果としてもらえる項目なので「日付」を設定
+        'lang': 'cn',
+        'sinm1': 'Furuokadrug Product',
+        'siam1': amount, // 商品金額  
+        'sisf1': '0', // 送料
+        'uniqueField': uniqueField
       }
 
       let url = "https://gw.ccps.jp/payment.aspx";
@@ -874,3 +895,4 @@ export default {
     }
   }
 </style>
+숫자를 입력해 주십시요

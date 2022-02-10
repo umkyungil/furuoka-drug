@@ -1,4 +1,4 @@
-# furuoka-drug
+# furuokadrug-live
 
 ## Project setup
 
