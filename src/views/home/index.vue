@@ -193,7 +193,7 @@ export default {
             // );
           }
           hvuex({
-            isSwitchScreen: false,
+            isSwitchScreen: true,
             userId: userId,
             isPublish: true,
           }).then(() => {
@@ -352,7 +352,6 @@ export default {
       const classNum = this.$store.state.data.classNum;
       const userName = this.$store.state.data.userName;      
       const uniqueField = classNum + '_' + userName;
-      console.log("unique: ", uniqueField);
 
       var date = new Date();
       const sod = date.toISOString();      
