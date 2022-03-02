@@ -1,4 +1,6 @@
 <template>
+  <!-- onClick 삭제` -->
+  <!-- <div class="nui-video-div" :id="userInfo.userId+'Div'"> -->
   <div class="nui-video-div" :id="userInfo.userId+'Div'" @click="switchScreen()">
     <div class="avatar avatar-name" v-show="isMuteVideo()" :id="userInfo.userId+'avatar'">
       {{userInfo.displayName}}
@@ -16,6 +18,9 @@
     props: ["userInfo"],
     data() {
       return {};
+    },
+    mounted() {
+      this.switchScreen()
     },
     methods: {
       isMuteVideo() {

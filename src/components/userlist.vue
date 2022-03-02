@@ -9,6 +9,12 @@
         <div class="avatar avatar-name">
           {{ $store.state.data.userName }}
         </div>
+        <!-- onClick 삭제-->
+        <!-- <video
+          autoplay
+          class="mirrorMode myUserId"
+          :id="$store.state.data.userId"
+        ></video> -->
         <video
           autoplay
           class="mirrorMode myUserId"
@@ -18,6 +24,7 @@
         <p class="name">{{ $store.state.data.userName }}</p>
       </li>
       <li v-for="v in $store.state.data.userList" :key="v.userId">
+        <!-- Member list 자신 이외의 비디오-->
         <hvideo @switchScreen="switchScreen" :userInfo="v"></hvideo>
       </li>
     </ul>

@@ -7,15 +7,16 @@
     <div class="container">
       <div class="container-box">
         <!-- <div v-if="toastVideo!==''" class="toast-video">{{toastVideo}}<span @click="toastVideo=''">x</span></div> -->
-        <div class="center-avatar">{{ $store.state.data.classNum }}</div>
+        <div class="center-avatar">{{ $store.state.data.classNum }} </div>
         <video :class="{ transform: !$store.state.data.isSwitchScreen }" id="localVideo" autoplay></video>
         <!-- <i @click="myFullscreen" :style="!this.isFullScreen ? 'background-image:url('+ fullUrl +')' : 'background-image:url('+ fullOnUrl +')'"></i> -->
       </div>
+      <!-- member list -->
       <div class="container-memberVideo" :class="showSlide ? 'showright' : 'hideright'">
         <div class="memberContainer">
-          <div v-show="isFullScreen" class="memberTab" @click="showSlide = !showSlide">
+          <!-- <div v-show="isFullScreen" class="memberTab" @click="showSlide = !showSlide">
             <i class="iconfont" :class="!showSlide ? 'icon-zuobian' : 'icon-youbian'"></i>
-          </div>
+          </div> -->
           <div class="member-content">
             <userlist></userlist>
           </div>
@@ -74,7 +75,7 @@
           <i @click="chat()" :style="'background-image:url(' + chatUrl +   ')'" ></i>
           <span>聊天</span>
         </div>
-        <!-- 合計 --> 
+        <!-- 합계 --> 
         <div class="wechatBtn">
           <i @click="wechatOpen()" :style="'background-image:url(' + wechatUrl +   ')'" ></i>
           <span>WechatPay</span>
@@ -180,7 +181,7 @@ export default {
     });
   },
   methods: {
-    // 初始化 开启预览
+    // 열린 미리보기 초기화
     init() {
       this.registerCallBack();
       RTCClient.instance.setAutoPublishSubscribe(true, true);
@@ -189,7 +190,8 @@ export default {
         .then((userId) => {
           if (RTCClient.instance.getRoomUserList().length === 0) {
             // this.$message(
-            //   "当前只有你一个人，你可以点击页面顶部【复制会议码】给其他参会人员"
+            //   "当前只有你一个人，你可以点击页面顶部【复制会议码】给其他参会人员" 
+            // 현재 귀하뿐입니다. 페이지 상단의 [회의 코드 복사]를 클릭하여 다른 참가자에게 보낼 수 있습니다.
             // );
           }
           hvuex({
@@ -312,8 +314,7 @@ export default {
     //     this.$message("所有静音已关闭"); // 모든 음소거가 꺼져 있습니다
     //   }
     // },
-    chat() {
-      
+    chat() {      
       alert("由于网络故障，它暂时不可用");
       //let href = "http://localhost:8080";
       // let href = "https://umkyungil.github.io/furuokadrug-twitter/#/";
@@ -324,6 +325,8 @@ export default {
 
       // window.open(href, "pop_name", "width="+w+", height="+h+", left="+xPos+", top="+yPos+", menubar=yes, status=yes, titlebar=yes, resizable=yes");
     },
+
+    // 결제 
     wechatOpen() {
       document.getElementById("wechatForm").style.display = "block";
     },
@@ -336,6 +339,7 @@ export default {
     alipayOpen() {
       document.getElementById("alipayForm").style.display = "block";
     },
+    // 입력값 체크
     wechatSubmit() {
       const amount = document.getElementById("wechat_amount").value;
       if (amount == "" || amount == undefined) {
@@ -894,4 +898,3 @@ export default {
     }
   }
 </style>
-숫자를 입력해 주십시요
