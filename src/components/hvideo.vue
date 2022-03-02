@@ -20,7 +20,9 @@
       return {};
     },
     mounted() {
-      this.switchScreen()
+      this.$nextTick(function () {
+        this.switchScreen();
+      })
     },
     methods: {
       isMuteVideo() {
