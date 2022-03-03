@@ -9,12 +9,6 @@
         <div class="avatar avatar-name">
           {{ $store.state.data.userName }}
         </div>
-        <!-- onClick 삭제-->
-        <!-- <video
-          autoplay
-          class="mirrorMode myUserId"
-          :id="$store.state.data.userId"
-        ></video> -->
         <video
           autoplay
           class="mirrorMode myUserId"
@@ -50,18 +44,31 @@ export default {
     };
   },
   mounted() {
-    this.$nextTick(() => {});
+    this.$nextTick(() => {
+      
+    });
   },
   methods: {
     switchScreen(userId) {
+
+      console.log("userId1: ", userId);
+      console.log("myUserId_1: ", this.myUserId);
+
       let subUserId = document
         .getElementById("localVideo")
-        .getAttribute("subUserId");
+        .getAttribute("subUserId"); 
       this.myUserId = RTCClient.instance.userId;
+
+      console.log("userId2: ", userId);
+      console.log("subUserId: ", subUserId);
+      console.log("myUserId_2: ", this.myUserId);
+
+
       this.$nextTick(() => {
         if (subUserId) {
           var _userId = subUserId;
           RTCClient.instance.subscribe(_userId).then((code) => {
+            console.log("1");
             RTCClient.instance.setDisplayRemoteVideo(
               _userId,
               document.getElementById(_userId),
@@ -70,7 +77,9 @@ export default {
           });
         }
         if (userId == this.myUserId || userId == subUserId) {
+          console.log("2");
           if (userId == this.myUserId) {
+            console.log("3");
             setTimeout(() => {
               if (this.$store.state.data.isPublishScreen) {
                 document.getElementById("localVideo").srcObject =
@@ -90,7 +99,13 @@ export default {
           document
             .getElementById("localVideo")
             .setAttribute("subUserId", userId);
+            console.log("4");
           RTCClient.instance.subscribeLarge(userId).then((code) => {
+            
+            
+            console.log("5");
+
+
             setTimeout(() => {
               RTCClient.instance.setDisplayRemoteVideo(
                 userId,
@@ -98,6 +113,8 @@ export default {
                 code
               );
             }, 200);
+          }).catch((error) => {
+              console.log('error: ', error);
           });
           hvuex({
             isSwitchScreen: true,

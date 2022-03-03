@@ -1,6 +1,4 @@
 <template>
-  <!-- onClick 삭제` -->
-  <!-- <div class="nui-video-div" :id="userInfo.userId+'Div'"> -->
   <div class="nui-video-div" :id="userInfo.userId+'Div'" @click="switchScreen()">
     <div class="avatar avatar-name" v-show="isMuteVideo()" :id="userInfo.userId+'avatar'">
       {{userInfo.displayName}}
@@ -20,9 +18,12 @@
       return {};
     },
     mounted() {
-      this.$nextTick(function () {
-        this.switchScreen();
-      })
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.switchScreen()
+        }, 100);
+        
+      });
     },
     methods: {
       isMuteVideo() {
