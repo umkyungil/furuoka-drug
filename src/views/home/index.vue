@@ -22,7 +22,8 @@
           </div>
         </div>
       </div>
-
+      
+      <!-- 결제팝업 -->
       <div class="form-popup" id="wechatForm">
         <form class="form-container">
           <h2>Wechat</h2>
@@ -271,7 +272,7 @@ export default {
         });
       this.video = !this.video;
     },
-    // push screen stream
+    // 화면 공유
     publishScreen() {
       if (!this.$store.state.data.isPublish) {
         Util.toast("未推流"); // 未推流
@@ -352,35 +353,50 @@ export default {
         return;
       }
 
-      // unique field를 사용자 이름과 클래스 넘버조합으로 생성
+      // 결제결과로 받을수 있는 항목에 임의의 데이타 지정
+      // unique field
       const classNum = this.$store.state.data.classNum;
-      const userName = this.$store.state.data.userName;      
+      const userName = this.$store.state.data.userName;
+      const loginUserId = this.$store.state.data.loginUserId;
       const uniqueField = classNum + '_' + userName;
-
+      // sod
       var date = new Date();
       const sod = date.toISOString();      
       
-      let wechat_variable = {
-        sid: '110106',
-        svid: '23',
-        ptype: '8',
-        job: 'REQUEST',
-        rt: '4',
-        sod: sod, // 決済結果としてもらえる項目なので「日付」を設定
-        lang: 'cn',
-        siam1: amount, // 商品金額
-        sinm1: 'Furuokadrug Product',
-        sisf1: '0', // 送料
-        method: 'QR',
-        uniqueField: uniqueField // unique field
+      // ECSystem에서 결제(loginUserId ECSystem에서 query string으로 전달된 값)
+      if (loginUserId) {
+        window.parent.postMessage({
+          type: "wechat", 
+          loginUserId: loginUserId,
+          sid: '110106',
+          sod: sod,
+          siam1: amount,
+          uniqueField: uniqueField,
+        }, "*")
+      } else {  
+        let wechat_variable = {
+          sid: '110106',
+          svid: '23',
+          ptype: '8',
+          job: 'REQUEST',
+          rt: '4',
+          sod: sod,
+          lang: 'cn',
+          siam1: amount,
+          sinm1: 'Furuokadrug Product',
+          sisf1: '0',
+          method: 'QR',
+          uniqueField: uniqueField
+        }
+
+        let url = "https://gw.ccps.jp/payment.aspx";
+        Object.keys(wechat_variable).forEach(function(key, index) {
+          url = url + (index === 0 ? "?" : "&") + key + "=" + wechat_variable[key];
+        });
+
+        window.open(url,"wechat","toolbar=0,menubar=0,scrollbars=auto,resizable=no,height=770,width=768,top=100px,left=100");
       }
-
-      let url = "https://gw.ccps.jp/payment.aspx";
-      Object.keys(wechat_variable).forEach(function(key, index) {
-        url = url + (index === 0 ? "?" : "&") + key + "=" + wechat_variable[key];
-      });
-
-      window.open(url,"wechat","toolbar=0,menubar=0,scrollbars=auto,resizable=no,height=770,width=768,top=100px,left=100");
+      this.wechatClose();
     },
     alipaySubmit() {
       const amount = document.getElementById("alipay_amount").value;
@@ -394,34 +410,49 @@ export default {
         return;
       }
 
-      // unique field를 사용자 이름과 클래스 넘버조합으로 생성
+      // 결제결과로 받을수 있는 항목에 임의의 데이타 지정
+      // unique field
       const classNum = this.$store.state.data.classNum;
-      const userName = this.$store.state.data.userName;      
+      const userName = this.$store.state.data.userName;
+      const loginUserId = this.$store.state.data.loginUserId;
       const uniqueField = classNum + '_' + userName;
-      console.log("unique: ", uniqueField);
+      // sod
+      let date = new Date();
+      const sod = date.toISOString();
 
-      var date = new Date();
-      const sod = date.toISOString();      
+      // ECSystem에서 결제(loginUserId ECSystem에서 query string으로 전달된 값)
+      if (loginUserId) {
+        window.parent.postMessage({
+          type: "alipay", 
+          loginUserId: loginUserId,
+          sid: '110106',
+          sod: sod,
+          siam1: amount,
+          uniqueField: uniqueField,
+        }, "*")
+      } else {
+        // Live Streaming에서 결제
+        let alipay_variable = {
+          'sid': '110106',
+          'svid': '6',
+          'ptype': '8',
+          'job': 'REQUEST',
+          'sod': sod, // 決済結果としてもらえる項目なので「日付」を設定
+          'lang': 'cn',
+          'sinm1': 'Furuokadrug Product',
+          'siam1': amount, // 商品金額  
+          'sisf1': '0', // 送料
+          'uniqueField': uniqueField
+        }
 
-      let alipay_variable = {
-        'sid': '110106',
-        'svid': '6',
-        'ptype': '8',
-        'job': 'REQUEST',
-        'sod': sod, // 決済結果としてもらえる項目なので「日付」を設定
-        'lang': 'cn',
-        'sinm1': 'Furuokadrug Product',
-        'siam1': amount, // 商品金額  
-        'sisf1': '0', // 送料
-        'uniqueField': uniqueField
+        let url = "https://gw.ccps.jp/payment.aspx";
+        Object.keys(alipay_variable).forEach(function(key, index) {
+          url = url + (index === 0 ? "?" : "&") + key + "=" + alipay_variable[key];
+        });
+
+        window.open(url,"alipay","toolbar=0,menubar=0,scrollbars=auto,resizable=no,height=770,width=768,top=100px,left=100");
       }
-
-      let url = "https://gw.ccps.jp/payment.aspx";
-      Object.keys(alipay_variable).forEach(function(key, index) {
-        url = url + (index === 0 ? "?" : "&") + key + "=" + alipay_variable[key];
-      });
-
-      window.open(url,"alipay","toolbar=0,menubar=0,scrollbars=auto,resizable=no,height=770,width=768,top=100px,left=100");
+      this.alipayClose();
     }
   },
   watch: {

@@ -2,23 +2,18 @@
   <div class="user-list">
     <div class="title">
       <p>Member List</p>
-      <!-- 成员列表-->
     </div>
+    <!-- 멤버리스트-->
     <ul class="list-video" v-show="showModel == 0">
       <li class="li-my">
         <div class="avatar avatar-name">
           {{ $store.state.data.userName }}
         </div>
-        <video
-          autoplay
-          class="mirrorMode myUserId"
-          :id="$store.state.data.userId"
-          @click="switchScreen(myUserId)"
-        ></video>
+        <video autoplay class="mirrorMode myUserId" :id="$store.state.data.userId" @click="switchScreen(myUserId)"></video>
         <p class="name">{{ $store.state.data.userName }}</p>
       </li>
       <li v-for="v in $store.state.data.userList" :key="v.userId">
-        <!-- Member list 자신 이외의 비디오-->
+        <!-- 멤버리스트에서 자신 이외의 비디오-->
         <hvideo @switchScreen="switchScreen" :userInfo="v"></hvideo>
       </li>
     </ul>
@@ -50,25 +45,15 @@ export default {
   },
   methods: {
     switchScreen(userId) {
-
-      console.log("userId1: ", userId);
-      console.log("myUserId_1: ", this.myUserId);
-
       let subUserId = document
         .getElementById("localVideo")
         .getAttribute("subUserId"); 
       this.myUserId = RTCClient.instance.userId;
 
-      console.log("userId2: ", userId);
-      console.log("subUserId: ", subUserId);
-      console.log("myUserId_2: ", this.myUserId);
-
-
       this.$nextTick(() => {
         if (subUserId) {
           var _userId = subUserId;
           RTCClient.instance.subscribe(_userId).then((code) => {
-            console.log("1");
             RTCClient.instance.setDisplayRemoteVideo(
               _userId,
               document.getElementById(_userId),
@@ -77,9 +62,7 @@ export default {
           });
         }
         if (userId == this.myUserId || userId == subUserId) {
-          console.log("2");
           if (userId == this.myUserId) {
-            console.log("3");
             setTimeout(() => {
               if (this.$store.state.data.isPublishScreen) {
                 document.getElementById("localVideo").srcObject =
@@ -99,13 +82,8 @@ export default {
           document
             .getElementById("localVideo")
             .setAttribute("subUserId", userId);
-            console.log("4");
+
           RTCClient.instance.subscribeLarge(userId).then((code) => {
-            
-            
-            console.log("5");
-
-
             setTimeout(() => {
               RTCClient.instance.setDisplayRemoteVideo(
                 userId,
@@ -134,9 +112,8 @@ export default {
       if (JSON.stringify(newVal) == JSON.stringify(oldVal)) {
         return;
       }
-      let subUserId = document
-        .getElementById("localVideo")
-        .getAttribute("subUserId");
+
+      let subUserId = document.getElementById("localVideo").getAttribute("subUserId");
       if (subUserId) {
         if (!RTCClient.instance.getUserInfo(subUserId)) {
           if (this.$store.state.data.isPublishScreen) {

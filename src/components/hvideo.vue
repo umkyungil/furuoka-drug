@@ -19,10 +19,9 @@
     },
     mounted() {
       this.$nextTick(() => {
-        setTimeout(() => {
-          this.switchScreen()
-        }, 100);
-        
+        console.log("this.$store.state.data.isSwitchScreen: ", this.$store.state.data.isSwitchScreen);  
+        this.switchScreen()
+
       });
     },
     methods: {

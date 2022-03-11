@@ -2,7 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import store from "../vuex/index";
 
-Vue.use(Router);
+Vue.use(Router);  
 
 //主路由
 const routes = [
@@ -11,10 +11,14 @@ const routes = [
     component: resolve => require(["../views/login/login.vue"], resolve)
   },
   {
+    path: "/login",
+    component: resolve => require(["../views/login/login.vue"], resolve)
+  },
+  {
     path: "/meet",
     component: resolve => require(["../views/home/index.vue"], resolve)
   },
-  // 全不匹配的情况下，返回404，路由按顺序从上到下，依次匹配。最后一个*能匹配全部，
+  // 일치하지 않는 경우 404가 반환되고 경로는 위에서 아래로 순서대로 일치됩니다. 마지막 *는 모두 일치할 수 있으며,
 ];
 
 const router = new Router({
@@ -24,8 +28,9 @@ const router = new Router({
   transitionOnLoad: true,
   routes
 });
-/*页面刷新重新赋值commmon 페이지 새로고침 및 재할당*/
-//给公共参数重新赋值 공개 매개변수 재할당
+
+/*commmon 페이지 새로고침 및 재할당*/
+//공개 매개변수 재할당
 if (hgetStore("hvuex")) {
   store.dispatch("hvuex", JSON.parse(hgetStore("hvuex")));
 }

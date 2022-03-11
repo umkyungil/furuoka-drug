@@ -6,8 +6,8 @@
         <span>古冈药业</span>
       </div>
       <div class="main-input shadow">
-        <input type="text" placeholder="请输入用户名" v-model="displayName"/><!-- 사용자 이름을 입력하십시오-->
-        <input type="text" autocomplete="off" placeholder="请输入会议码" v-model="room" id="channel"/><!-- 회의 코드를 입력하세요-->
+        <input type="text" placeholder="请输入用户名" v-model="displayName"/><!-- 사용자 이름-->
+        <input type="text" autocomplete="off" placeholder="请输入会议码" v-model="room" id="channel"/><!-- 방 번호-->
         <button class="hui hui-btn" :disabled="room.length == 0 && displayName" @click="submit()">加入</button>
       </div>
       <div class="main-button">
@@ -31,17 +31,38 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.$nextTick(function () {
+      // 전체 화면내용이 렌더링된 후에 아래의 코드가 실행됩니다.      
+      if (this.$route.query.name && this.$route.query.room && this.$route.query.userId) {
+        this.submit();
+      }
+    })
+  },
   methods: {
     // 채널가입
     submit() {
+      const query_name = this.$route.query.name;
+      const query_room = this.$route.query.room
+      const query_userId = this.$route.query.userId
+
       var reg = new RegExp(/^([0-9]{1,12})?$/g);
-      if (!reg.test(this.room)) {
-        this.$message("会议码格式不正确，请输入12位以内纯数字"); // Please enter a number within 12 digits
-        return;
+      // URL로 룸에 접속하는 경우
+      if (query_name) {        
+        if (!reg.test(query_room)) {
+          this.$message("会议码格式不正确，请输入12位以内纯数字"); // Please enter a number within 12 digits
+          return;
+        }
+        hvuex({ classNum: query_room, userName: query_name, loginUserId: query_userId });
+      } else {
+        // 비디오 채팅에서 이름과 방번호를 입력해서 룸에 접속하는 경우
+        if (!reg.test(this.room)) {
+          this.$message("会议码格式不正确，请输入12位以内纯数字");
+          return;
+        }
+        hvuex({ classNum: this.room, userName: this.displayName });
       }
-      hvuex({ classNum: this.room, userName: this.displayName });
-      // 跳转页面(페이지 이동)
+      // 페이지 이동
       this.$router.push("/meet");
     },
   },

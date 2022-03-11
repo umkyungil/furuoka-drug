@@ -66,7 +66,7 @@ export default class Util {
         }
     }
     /**
-     * 退出房间 방 나가기
+     * 방 나가기
      */
     static exitRoom() {
         RTCClient.instance
