@@ -182,7 +182,7 @@ export default {
     });
   },
   methods: {
-    // 열린 미리보기 초기화
+    // 초기화
     init() {
       this.registerCallBack();
       RTCClient.instance.setAutoPublishSubscribe(true, true);

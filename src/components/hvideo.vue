@@ -3,6 +3,7 @@
     <div class="avatar avatar-name" v-show="isMuteVideo()" :id="userInfo.userId+'avatar'">
       {{userInfo.displayName}}
     </div>
+    <!-- 실제 유저 화면 -->
     <video class="nui-video" :id="userInfo.userId" autoplay></video>
     <div class="nui-video-footer">
       <span class="user-name">{{userInfo.displayName}}</span>
@@ -19,7 +20,6 @@
     },
     mounted() {
       this.$nextTick(() => {
-        console.log("this.$store.state.data.isSwitchScreen: ", this.$store.state.data.isSwitchScreen);  
         this.switchScreen()
 
       });

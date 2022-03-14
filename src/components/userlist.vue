@@ -5,6 +5,7 @@
     </div>
     <!-- 멤버리스트-->
     <ul class="list-video" v-show="showModel == 0">
+      <!-- 멤버리스트에서 자신의 비디오-->
       <li class="li-my">
         <div class="avatar avatar-name">
           {{ $store.state.data.userName }}
@@ -12,8 +13,10 @@
         <video autoplay class="mirrorMode myUserId" :id="$store.state.data.userId" @click="switchScreen(myUserId)"></video>
         <p class="name">{{ $store.state.data.userName }}</p>
       </li>
+      <!-- 멤버리스트에서 자신 이외의 비디오-->
       <li v-for="v in $store.state.data.userList" :key="v.userId">
-        <!-- 멤버리스트에서 자신 이외의 비디오-->
+        <!-- :userInfo="v": props로 유저정보를 hvideo로 넘기 -->
+        <!-- @switchScreen="switchScreen": hvideo에서 userId를 받는다 -->
         <hvideo @switchScreen="switchScreen" :userInfo="v"></hvideo>
       </li>
     </ul>
@@ -45,10 +48,12 @@ export default {
   },
   methods: {
     switchScreen(userId) {
-      let subUserId = document
-        .getElementById("localVideo")
-        .getAttribute("subUserId"); 
+      let subUserId = document.getElementById("localVideo").getAttribute("subUserId"); 
       this.myUserId = RTCClient.instance.userId;
+
+      console.log("userlist userId: ", userId);
+      console.log("userlist subUserId: ", subUserId);
+      console.log("userlist myUserId: ", myUserId);
 
       this.$nextTick(() => {
         if (subUserId) {
