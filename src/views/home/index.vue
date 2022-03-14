@@ -201,6 +201,7 @@ export default {
             isPublish: true,
           }).then(() => {
             Utils.startPreview(document.getElementById(userId)).then((re) => {
+              // 로컬 비디오에 대한 렌더링 창 및 그리기 매개변수 설정
               RTCClient.instance.setDisplayLocalVideo(
                 document.getElementById("localVideo"),
                 1

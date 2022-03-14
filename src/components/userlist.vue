@@ -43,7 +43,10 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      
+      console.log("0");
+
+      this.switchScreen(RTCClient.instance.userId);
+
     });
   },
   methods: {
@@ -51,12 +54,17 @@ export default {
       let subUserId = document.getElementById("localVideo").getAttribute("subUserId"); 
       this.myUserId = RTCClient.instance.userId;
 
-      console.log("userlist userId: ", userId);
+      console.log("userlist userId1: ", userId);
       console.log("userlist subUserId: ", subUserId);
       console.log("userlist myUserId: ", this.myUserId);
 
+      console.log("1");
+
       this.$nextTick(() => {
+        // 멤버리스트의 상대방화면이 메인에 보일때 내 화면을 클릭
+        // 멤버리스트의 상대방화면이 메일에 보일때 상대방 화면을 클릭(메인화면은 보이지 않게 된다)
         if (subUserId) {
+          console.log("2");
           var _userId = subUserId;
           RTCClient.instance.subscribe(_userId).then((code) => {
             RTCClient.instance.setDisplayRemoteVideo(
@@ -66,15 +74,19 @@ export default {
             );
           });
         }
+        // 멤버리스트의 내 화면이 메인에 보일때 내 화면을 클릭
+        // 멤버리스트의 상대방화면이 메인에 보일때 내 화면을 클릭
         if (userId == this.myUserId || userId == subUserId) {
           if (userId == this.myUserId) {
+            console.log("3");
             setTimeout(() => {
               if (this.$store.state.data.isPublishScreen) {
                 document.getElementById("localVideo").srcObject =
-                  RTCClient.instance.screenStream;
+                  AppConfig.localStream;
               } else {
                 document.getElementById("localVideo").srcObject =
-                  AppConfig.localStream;
+                  RTCClient.instance.screenStream;
+                  
               }
             }, 200);
             document.getElementById("localVideo").removeAttribute("subUserId");
@@ -84,10 +96,15 @@ export default {
           }
           return;
         } else {
+          // 멤버리스트의 상대방 화면을 클릭
+          console.log("4");
           document.getElementById("localVideo").setAttribute("subUserId", userId);
-
+          console.log("userlist userId2: ", userId);
           RTCClient.instance.subscribeLarge(userId).then((code) => {
+
+            console.log("userList code: ", code);
             setTimeout(() => {
+              // 원격 비디오에 대한 렌더링 창 및 그리기 매개변수 설정
               RTCClient.instance.setDisplayRemoteVideo(
                 userId,
                 document.getElementById("localVideo"),
