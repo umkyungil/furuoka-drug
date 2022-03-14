@@ -20,7 +20,7 @@
     },
     mounted() {
       this.$nextTick(() => {
-        this.switchScreen()
+        //this.switchScreen()
       });
     },
     methods: {
