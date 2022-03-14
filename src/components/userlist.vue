@@ -53,7 +53,7 @@ export default {
 
       console.log("userlist userId: ", userId);
       console.log("userlist subUserId: ", subUserId);
-      console.log("userlist myUserId: ", myUserId);
+      console.log("userlist myUserId: ", this.myUserId);
 
       this.$nextTick(() => {
         if (subUserId) {
@@ -84,9 +84,7 @@ export default {
           }
           return;
         } else {
-          document
-            .getElementById("localVideo")
-            .setAttribute("subUserId", userId);
+          document.getElementById("localVideo").setAttribute("subUserId", userId);
 
           RTCClient.instance.subscribeLarge(userId).then((code) => {
             setTimeout(() => {
