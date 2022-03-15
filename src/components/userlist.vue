@@ -17,7 +17,7 @@
       <li v-for="v in $store.state.data.userList" :key="v.userId">
         <!-- :userInfo="v": props로 유저정보를 hvideo로 넘기 -->
         <!-- @switchScreen="switchScreen": hvideo에서 userId를 받는다 -->
-        <hvideo @switchScreen="switchScreen" :userInfo="v"></hvideo>
+        <hvideo @switchScreen="switchScreen" @preSwitchScreen="preSwitchScreen" :userInfo="v"></hvideo>
       </li>
     </ul>
     <ul class="list-txt" v-show="showModel == 1">
@@ -43,28 +43,45 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      console.log("0");
-
-      this.switchScreen(RTCClient.instance.userId);
-
+      
     });
   },
   methods: {
+    preSwitchScreen(userId) {
+      this.myUserId = RTCClient.instance.userId;
+
+      // 멤버리스트의 내 화면이 메인에 보일때 상대방 화면을 클릭
+      document.getElementById("localVideo").setAttribute("subUserId", userId);
+      RTCClient.instance.subscribeLarge(userId).then((code) => {
+        setTimeout(() => {
+          // 원격 비디오에 대한 렌더링 창 및 그리기 매개변수 설정
+          RTCClient.instance.setDisplayRemoteVideo(
+            userId,
+            document.getElementById("localVideo"),
+            code
+          );
+        }, 200);
+      }).catch((error) => {
+          console.log('error: ', error);
+      });
+      hvuex({
+        isSwitchScreen: true,
+      });
+    },
+
+
     switchScreen(userId) {
-      let subUserId = document.getElementById("localVideo").getAttribute("subUserId"); 
+      let subUserId = document.getElementById("localVideo").getAttribute("subUserId");
       this.myUserId = RTCClient.instance.userId;
 
       console.log("userlist userId1: ", userId);
       console.log("userlist subUserId: ", subUserId);
       console.log("userlist myUserId: ", this.myUserId);
 
-      console.log("1");
-
       this.$nextTick(() => {
         // 멤버리스트의 상대방화면이 메인에 보일때 내 화면을 클릭
-        // 멤버리스트의 상대방화면이 메일에 보일때 상대방 화면을 클릭(메인화면은 보이지 않게 된다)
+        // 멤버리스트의 상대방화면이 메인에 보일때 상대방 화면을 클릭(메인화면은 보이지 않게 된다)
         if (subUserId) {
-          console.log("2");
           var _userId = subUserId;
           RTCClient.instance.subscribe(_userId).then((code) => {
             RTCClient.instance.setDisplayRemoteVideo(
@@ -78,15 +95,11 @@ export default {
         // 멤버리스트의 상대방화면이 메인에 보일때 내 화면을 클릭
         if (userId == this.myUserId || userId == subUserId) {
           if (userId == this.myUserId) {
-            console.log("3");
             setTimeout(() => {
               if (this.$store.state.data.isPublishScreen) {
-                document.getElementById("localVideo").srcObject =
-                  AppConfig.localStream;
+                document.getElementById("localVideo").srcObject = RTCClient.instance.screenStream;
               } else {
-                document.getElementById("localVideo").srcObject =
-                  RTCClient.instance.screenStream;
-                  
+                document.getElementById("localVideo").srcObject = AppConfig.localStream;
               }
             }, 200);
             document.getElementById("localVideo").removeAttribute("subUserId");
@@ -96,13 +109,9 @@ export default {
           }
           return;
         } else {
-          // 멤버리스트의 상대방 화면을 클릭
-          console.log("4");
+          // 멤버리스트의 내 화면이 메인에 보일때 상대방 화면을 클릭
           document.getElementById("localVideo").setAttribute("subUserId", userId);
-          console.log("userlist userId2: ", userId);
           RTCClient.instance.subscribeLarge(userId).then((code) => {
-
-            console.log("userList code: ", code);
             setTimeout(() => {
               // 원격 비디오에 대한 렌더링 창 및 그리기 매개변수 설정
               RTCClient.instance.setDisplayRemoteVideo(
@@ -124,6 +133,7 @@ export default {
   watch: {
     "$store.state.data.switchUserId"(newVal, oldVal) {
       if (newVal) {
+        console.log("watch newVal:", newVal);
         this.switchScreen(newVal);
         hvuex({ switchUserId: null });
       }
@@ -133,19 +143,21 @@ export default {
         return;
       }
 
+      console.log("watch userList: ",  newVal);
+
       let subUserId = document.getElementById("localVideo").getAttribute("subUserId");
+
+      console.log("watch subUserId: ",  subUserId);
+
       if (subUserId) {
         if (!RTCClient.instance.getUserInfo(subUserId)) {
           if (this.$store.state.data.isPublishScreen) {
-            document.getElementById("localVideo").srcObject =
-              RTCClient.instance.screenStream;
+            document.getElementById("localVideo").srcObject = RTCClient.instance.screenStream;
             if (this.$store.state.data.isSwitchScreen) {
-              document.getElementById(RTCClient.instance.userId).srcObject =
-                AppConfig.localStream;
+              document.getElementById(RTCClient.instance.userId).srcObject = AppConfig.localStream;
             }
           } else {
-            document.getElementById("localVideo").srcObject =
-              AppConfig.localStream;
+            document.getElementById("localVideo").srcObject = AppConfig.localStream;
           }
           document.getElementById("localVideo").removeAttribute("subUserId");
           hvuex({

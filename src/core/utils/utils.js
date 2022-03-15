@@ -77,7 +77,7 @@ export default class Util {
             });
     }
     /**
-     * 开始预览 미리보기 시작
+     * 미리보기 시작
      */
     static startPreview(view) {
         return new Promise((resolve,reject)=>{
@@ -178,13 +178,13 @@ export default class Util {
                 break;
             case 10011:
                 {
-                    resmsg += "屏幕共享被禁用";
+                    resmsg += "屏幕共享被禁用"; // 화면 공유가 비활성화되었습니다.
                     hvuex({ isPublishScreen: false });
 
                 }
                 break;
             case 10012:
-                resmsg += "屏幕共享已取消";
+                resmsg += "屏幕共享已取消"; // 화면 공유 취소됨
                 hvuex({ isPublishScreen: false });
                 if (state.data.isSwitchScreen) {
                     if (state.data.isPublishScreen) {

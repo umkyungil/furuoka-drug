@@ -14,13 +14,13 @@
 
 <script>
   export default {
-    props: ["userInfo", "myInfo"],
+    props: ["userInfo"],
     data() {
       return {};
     },
     mounted() {
       this.$nextTick(() => {
-        this.switchScreen()
+        this.preSwitchScreen()
       });
     },
     methods: {
@@ -57,6 +57,9 @@
             return true;
           }
         }
+      },
+      preSwitchScreen() {
+        this.$emit("preSwitchScreen", this.userInfo.userId);
       },
       switchScreen() {
         this.$emit("switchScreen", this.userInfo.userId);

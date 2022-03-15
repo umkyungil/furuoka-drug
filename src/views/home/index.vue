@@ -184,7 +184,7 @@ export default {
   methods: {
     // 초기화
     init() {
-      this.registerCallBack();
+      this.registerCallBack(); // 콜백등록
       RTCClient.instance.setAutoPublishSubscribe(true, true);
       RTCClient.instance
         .login(this.$store.state.data.classNum, this.$store.state.data.userName)
