@@ -48,10 +48,17 @@ export default {
   },
   methods: {
     preSwitchScreen(userId) {
+      
       this.myUserId = RTCClient.instance.userId;
 
+      console.log("$store.state.data.userId: ", this.$store.state.data.userId);  
+      console.log("userId: ", userId);  
+      console.log("myUserId: ", this.myUserId);  
+
+
+      
       // 멤버리스트의 내 화면이 메인에 보일때 상대방 화면을 클릭
-      document.getElementById("localVideo").setAttribute("subUserId", userId);
+      //document.getElementById("localVideo").setAttribute("subUserId", userId);
       RTCClient.instance.subscribeLarge(userId).then((code) => {
         setTimeout(() => {
           // 원격 비디오에 대한 렌더링 창 및 그리기 매개변수 설정
@@ -121,7 +128,7 @@ export default {
               );
             }, 200);
           }).catch((error) => {
-              console.log('error: ', error);
+              console.log('error---->: ', error);
           });
           hvuex({
             isSwitchScreen: true,
