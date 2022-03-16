@@ -39,6 +39,7 @@ export default {
     return {
       showModel: 0,
       myUserId: null,
+      count: 0,
     };
   },
   mounted() {
@@ -48,7 +49,8 @@ export default {
   },
   methods: {
     preSwitchScreen(userId) {
-      
+      this.count = this.count++;
+      console.log("count: ", this.count);
       this.myUserId = this.$store.state.data.userId;
 
       console.log("myId: ", this.$store.state.data.userId);  

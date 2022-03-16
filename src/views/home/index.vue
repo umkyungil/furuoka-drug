@@ -66,7 +66,6 @@
           </i>
           <span>共享屏幕</span><!-- Share screen-->
         </div>
-        
         <!-- 전체 음소거 
         <div class="muteAll">
           <i @click="muteAll" :style="!this.muteAllState ? 'background-image:url(' + muteAllUrl + ')' : 'background-image:url(' + muteAllOnUrl + ')'"></i>
@@ -136,7 +135,6 @@ import settingUrl from "../../assets/icon/setting.png";
 import micListUrl from "../../assets/icon/micList.png";
 import micListOffUrl from "../../assets/icon/micList-off.png";
 import userlist from '../../components/userlist.vue';
-
 import chatUrl from "../../assets/icon/chat2.png";
 import wechatUrl from "../../assets/icon/wechat.png";
 import alipayUrl from "../../assets/icon/alipay.png";
@@ -149,9 +147,7 @@ export default {
       video: true,
       leaveShadow: false, //창을 떠나
       isFullScreen: false, //전체 화면 상태
-      // toastVideo: "", //메인 창 상단에 표시되는 정보
       showSlide: true, //전체 화면 상태 측면 표시 상태
-      // muteAllState: false, //모든 구성원은 침묵
       offUrl: offUrl,
       micUrl: micUrl,
       micOnUrl: micOnUrl,
@@ -159,8 +155,6 @@ export default {
       cameraOnUrl: cameraOnUrl,
       screenUrl: screenUrl,
       screenOnUrl: screenOnUrl,
-      // Url: muteAllUrl,muteAll
-      // muteAllOnUrl: muteAllOnUrl,
       fullUrl: fullUrl,
       fullOnUrl: fullOnUrl,
       settingUrl: settingUrl,
@@ -171,6 +165,10 @@ export default {
       chatUrl: chatUrl,
       wechatUrl: wechatUrl,
       alipayUrl: alipayUrl,
+      // toastVideo: "", //메인 창 상단에 표시되는 정보
+      // Url: muteAllUrl,muteAll
+      // muteAllOnUrl: muteAllOnUrl,
+      // muteAllState: false, //모든 구성원은 침묵
     };
   },
   created() {
@@ -247,7 +245,17 @@ export default {
       });
     },
     goBack() {
-      Utils.exitRoom();
+      const loginUserId = this.$store.state.data.loginUserId;
+      // ECSystem에서 종료할 경우
+      if (loginUserId) {
+        console.log();
+        window.parent.postMessage({
+          type: "exitRoom"
+        }, "*")
+      // Live streaming에서 종료할 경우
+      } else {
+        Utils.exitRoom();
+      }
     },
     // 로컬 마이크 수집 제어
     muteLocalMic() {
@@ -374,6 +382,7 @@ export default {
           siam1: amount,
           uniqueField: uniqueField,
         }, "*")
+      // Live Streaming시스템에서 결제
       } else {  
         let wechat_variable = {
           sid: '110106',
@@ -438,7 +447,7 @@ export default {
           'svid': '6',
           'ptype': '8',
           'job': 'REQUEST',
-          'sod': sod, // 決済結果としてもらえる項目なので「日付」を設定
+          'sod': sod, // 결제결과로 전송받는 항목(현재는 날자를 지정하고 있으나 변경 가능)          
           'lang': 'cn',
           'sinm1': 'Furuokadrug Product',
           'siam1': amount, // 商品金額  
