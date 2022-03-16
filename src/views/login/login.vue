@@ -26,14 +26,14 @@ export default {
   data() {
     return {
       room: "",
-      displayName: "", //名称
+      displayName: "", // 이름
       bgUrl: bgUrl,
     };
   },
   created() {},
   mounted() {
     this.$nextTick(function () {
-      // 전체 화면내용이 렌더링된 후에 아래의 코드가 실행됩니다.
+      // 전체 화면내용이 렌더링된 후에 아래의 코드가 실행
       if (this.$route.query.type) {
         // ECSystem에서 URL호출
         if (this.$route.query.type === "ec") {
