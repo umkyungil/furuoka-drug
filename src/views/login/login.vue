@@ -34,17 +34,18 @@ export default {
   mounted() {
     this.$nextTick(function () {
       // 전체 화면내용이 렌더링된 후에 아래의 코드가 실행됩니다.
-      // ECSystem에서 URL호출
-      if (this.$route.query.type) return
-      if (this.$route.query.type === "ec") {
-        if (this.$route.query.name && this.$route.query.room && this.$route.query.userId) {
-          this.submit();
-        }
-      // Link URL호출(userId 데이타가 없음)
-      } else if (this.$route.query.type === "link") {
-        if (this.$route.query.name && this.$route.query.room) {
-          this.submit();
-        }
+      if (this.$route.query.type) {
+        // ECSystem에서 URL호출
+        if (this.$route.query.type === "ec") {
+          if (this.$route.query.name && this.$route.query.room && this.$route.query.userId) {
+            this.submit();
+          }
+        // Link URL호출(userId 데이타가 없음)
+        } else if (this.$route.query.type === "link") {
+          if (this.$route.query.name && this.$route.query.room) {
+            this.submit();
+          }
+        }  
       }
     })
   },
