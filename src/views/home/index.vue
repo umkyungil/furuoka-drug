@@ -245,10 +245,9 @@ export default {
       });
     },
     goBack() {
-      const loginUserId = this.$store.state.data.loginUserId;
+      const sendType = this.$store.state.data.type;
       // ECSystem에서 종료할 경우
-      if (loginUserId) {
-        console.log();
+      if (sendType==="ec") {
         window.parent.postMessage({
           type: "exitRoom"
         }, "*")
@@ -362,18 +361,19 @@ export default {
         return;
       }
 
-      // 결제결과로 받을수 있는 항목에 임의의 데이타 지정
-      // unique field
+      // Query Parameter취득
+      const sendType = this.$store.state.data.type;
       const classNum = this.$store.state.data.classNum;
       const userName = this.$store.state.data.userName;
       const loginUserId = this.$store.state.data.loginUserId;
+
+      // 결제결과로 받을수 있는 항목에 임의의 데이타 지정
       const uniqueField = classNum + '_' + userName;
-      // sod
       var date = new Date();
       const sod = date.toISOString();      
       
-      // ECSystem에서 결제(loginUserId ECSystem에서 query string으로 전달된 값)
-      if (loginUserId) {
+      // ECSystem에서 결제(senType:ec)
+      if (sendType === "ec") {
         window.parent.postMessage({
           type: "wechat", 
           loginUserId: loginUserId,
@@ -418,20 +418,21 @@ export default {
       if (!reg.test(amount)) {
         this.$message("会议码格式不正确");
         return;
-      }
-
-      // 결제결과로 받을수 있는 항목에 임의의 데이타 지정
-      // unique field
+      }      
+      
+      // Query Parameter취득
+      const sendType = this.$store.state.data.type;
       const classNum = this.$store.state.data.classNum;
       const userName = this.$store.state.data.userName;
       const loginUserId = this.$store.state.data.loginUserId;
+
+      // 결제결과로 받을수 있는 항목에 임의의 데이타 지정
       const uniqueField = classNum + '_' + userName;
-      // sod
       let date = new Date();
       const sod = date.toISOString();
 
-      // ECSystem에서 결제(loginUserId ECSystem에서 query string으로 전달된 값)
-      if (loginUserId) {
+      // ECSystem에서 결제(senType:ec)
+      if (sendType === "ec") {
         window.parent.postMessage({
           type: "alipay", 
           loginUserId: loginUserId,
@@ -450,8 +451,8 @@ export default {
           'sod': sod, // 결제결과로 전송받는 항목(현재는 날자를 지정하고 있으나 변경 가능)          
           'lang': 'cn',
           'sinm1': 'Furuokadrug Product',
-          'siam1': amount, // 商品金額  
-          'sisf1': '0', // 送料
+          'siam1': amount, // 상품금액
+          'sisf1': '0', // 송금 수수료
           'uniqueField': uniqueField
         }
 

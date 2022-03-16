@@ -34,27 +34,36 @@ export default {
   mounted() {
     this.$nextTick(function () {
       // 전체 화면내용이 렌더링된 후에 아래의 코드가 실행됩니다.
-      // ECSystem에서 URL로 호출 또는 URL링크로 호출하는 경우 실행
-      if (this.$route.query.name && this.$route.query.room && this.$route.query.userId) {
-        this.submit();
+      // ECSystem에서 URL호출
+      if (this.$route.query.type) return
+      if (this.$route.query.type === "ec") {
+        if (this.$route.query.name && this.$route.query.room && this.$route.query.userId) {
+          this.submit();
+        }
+      // Link URL호출(userId 데이타가 없음)
+      } else if (this.$route.query.type === "link") {
+        if (this.$route.query.name && this.$route.query.room) {
+          this.submit();
+        }
       }
     })
   },
   methods: {
     // 채널가입
     submit() {
+      const query_type = this.$route.query.type;
       const query_name = this.$route.query.name;
       const query_room = this.$route.query.room
       const query_userId = this.$route.query.userId
 
       var reg = new RegExp(/^([0-9]{1,12})?$/g);
       // URL로 룸에 접속하는 경우(query_name의 값이 존재함)
-      if (query_name) {        
+      if (query_type) {        
         if (!reg.test(query_room)) {
           this.$message("会议码格式不正确，请输入12位以内纯数字"); // Please enter a number within 12 digits
           return;
         }
-        hvuex({ classNum: query_room, userName: query_name, loginUserId: query_userId });
+        hvuex({ classNum: query_room, userName: query_name, loginUserId: query_userId, type: query_type });
       } else {
         // 비디오 채팅에서 이름과 방번호를 입력해서 룸에 접속하는 경우
         if (!reg.test(this.room)) {
