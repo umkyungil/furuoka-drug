@@ -61,14 +61,14 @@ export default {
       // URL로 룸에 접속하는 경우(query_name의 값이 존재함)
       if (query_type) {        
         if (!reg.test(query_room)) {
-          this.$message("会议码格式不正确，请输入12位以内纯数字"); // Please enter a number within 12 digits
+          this.$message("会议码格式不正确, 请输入12位以内纯数字"); // Please enter a number within 12 digits
           return;
         }
         hvuex({ classNum: query_room, userName: query_name, loginUserId: query_userId, type: query_type });
       } else {
         // 비디오 채팅에서 이름과 방번호를 입력해서 룸에 접속하는 경우
         if (!reg.test(this.room)) {
-          this.$message("会议码格式不正确，请输入12位以内纯数字");
+          this.$message("会议码格式不正确, 请输入12位以内纯数字");
           return;
         }
         hvuex({ classNum: this.room, userName: this.displayName });
