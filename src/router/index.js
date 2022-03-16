@@ -22,7 +22,7 @@ const routes = [
 ];
 
 const router = new Router({
-  mode: 'history',
+  //mode: 'history',
   hashbang: true,
   history: true,
   transitionOnLoad: true,
