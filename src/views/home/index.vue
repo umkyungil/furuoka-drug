@@ -21,8 +21,7 @@
             <userlist></userlist>
           </div>
         </div>
-      </div>
-      
+      </div>      
       <!-- 결제팝업 -->
       <div class="form-popup" id="wechatForm">
         <form class="form-container">
@@ -40,7 +39,6 @@
           <button type="button" class="btn cancel" @click="alipayClose()">Close</button>
         </form>
       </div>
-
     </div>
     <div align="center" class="footer">
       <!-- 로고  
@@ -172,6 +170,19 @@ export default {
     };
   },
   created() {
+    if (this.$route.query.type) {
+      // ECSystem에서 URL호출
+      if (this.$route.query.type === "ec") {
+        if (this.$route.query.name && this.$route.query.room && this.$route.query.userId) {
+          this.submit();
+        }
+      // Link URL호출(userId 데이타가 없음)
+      } else if (this.$route.query.type === "link") {
+        if (this.$route.query.name && this.$route.query.room) {
+          this.submit();
+        }
+      }  
+    }
   },
   mounted() {
     this.$nextTick(() => {
@@ -246,12 +257,14 @@ export default {
     },
     goBack() {
       const sendType = this.$store.state.data.type;
-      // ECSystem에서 종료할 경우
-      if (sendType==="ec") {
+      // ECSystem 종료할 경우 type을 넘겨서 랜딩페이지로 이동하게 함
+      if (sendType === "ec") {
         window.parent.postMessage({
           type: "exitRoom"
         }, "*")
-      // Live streaming에서 종료할 경우
+      // Live streaming 브라우저 탭을 종료
+      } else if (sendType === "link") {
+        window.close();
       } else {
         Utils.exitRoom();
       }
@@ -323,6 +336,31 @@ export default {
     //     this.$message("所有静音已关闭"); // 모든 음소거가 꺼져 있습니다
     //   }
     // },
+    submit() {
+      const query_type = this.$route.query.type;
+      const query_name = this.$route.query.name;
+      const query_room = this.$route.query.room
+      const query_userId = this.$route.query.userId
+
+      var reg = new RegExp(/^([0-9]{1,12})?$/g);
+      // URL로 룸에 접속하는 경우(query_name의 값이 존재함)
+      if (query_type) {        
+        if (!reg.test(query_room)) {
+          this.$message("会议码格式不正确, 请输入12位以内纯数字"); // Please enter a number within 12 digits
+          return;
+        }
+        hvuex({ classNum: query_room, userName: query_name, loginUserId: query_userId, type: query_type });
+      } else {
+        // 비디오 채팅에서 이름과 방번호를 입력해서 룸에 접속하는 경우
+        if (!reg.test(this.room)) {
+          this.$message("会议码格式不正确, 请输入12位以内纯数字");
+          return;
+        }
+        hvuex({ classNum: this.room, userName: this.displayName });
+      }
+      // 페이지 이동
+      // this.$router.push("/meet");
+    },
     chat() {      
       alert("由于网络故障，它暂时不可用");
       //let href = "http://localhost:8080";
