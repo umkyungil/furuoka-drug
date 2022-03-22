@@ -499,7 +499,7 @@ export default {
           url = url + (index === 0 ? "?" : "&") + key + "=" + alipay_variable[key];
         });
 
-        window.open(url,"alipay","toolbar=0,menubar=0,scrollbars=auto,resizable=no,height=770,width=768,top=100px,left=100");
+        window.open(url,"_blank","toolbar=0,menubar=0,scrollbars=auto,resizable=no,height=770,width=768,top=100px,left=100");
       }
       this.alipayClose();
     }
