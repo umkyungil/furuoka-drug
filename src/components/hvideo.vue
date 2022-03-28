@@ -19,9 +19,7 @@
       return {};
     },
     mounted() {
-      this.$nextTick(() => {
-        this.preSwitchScreen()
-      });
+      this.$nextTick(() => {});
     },
     methods: {
       isMuteVideo() {
@@ -57,9 +55,6 @@
             return true;
           }
         }
-      },
-      preSwitchScreen() {
-        this.$emit("preSwitchScreen", this.userInfo.userId);
       },
       switchScreen() {
         this.$emit("switchScreen", this.userInfo.userId);

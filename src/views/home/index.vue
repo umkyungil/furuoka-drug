@@ -176,7 +176,7 @@ export default {
         if (this.$route.query.name && this.$route.query.room && this.$route.query.userId) {
           this.submit();
         }
-      // Link URL호출(userId 데이타가 없음)
+      // Link URL 또는 초기화면을 통해 방에 접속한 경우(userId 데이타가 없음)
       } else if (this.$route.query.type === "link") {
         if (this.$route.query.name && this.$route.query.room) {
           this.submit();
@@ -405,12 +405,17 @@ export default {
       const userName = this.$store.state.data.userName;
       const loginUserId = this.$store.state.data.loginUserId;
 
+      // 상대방 이름 취득(EC시스템의 Order관리의 담당자이름)
+      const guestName = this.$store.state.data.guestName;
+
+      console.log("guestName: ", guestName);
+
       // 결제결과로 받을수 있는 항목에 임의의 데이타 지정
       const uniqueField = classNum + '_' + userName;
       var date = new Date();
       const sod = date.toISOString();      
       
-      // ECSystem에서 결제(senType:ec)
+      // ECSystem에서 결제확인 페이지(LiveStreaming)에 데이타 송신(senType:ec)
       if (sendType === "ec") {
         window.parent.postMessage({
           type: "wechat", 
@@ -419,6 +424,7 @@ export default {
           sod: sod,
           siam1: amount,
           uniqueField: uniqueField,
+          guestName: guestName,
         }, "*")
       // Live Streaming시스템에서 결제
       } else {  
@@ -463,6 +469,9 @@ export default {
       const classNum = this.$store.state.data.classNum;
       const userName = this.$store.state.data.userName;
       const loginUserId = this.$store.state.data.loginUserId;
+      
+      // 상대방 이름 취득(EC시스템의 Order관리의 담당자이름)
+      const guestName = this.$store.state.data.guestName;
 
       // 결제결과로 받을수 있는 항목에 임의의 데이타 지정
       const uniqueField = classNum + '_' + userName;
@@ -474,6 +483,7 @@ export default {
         window.parent.postMessage({
           type: "alipay", 
           loginUserId: loginUserId,
+          guestName: guestName,
           sid: '110106',
           sod: sod,
           siam1: amount,
@@ -502,7 +512,7 @@ export default {
         window.open(url,"_blank","toolbar=0,menubar=0,scrollbars=auto,resizable=no,height=770,width=768,top=100px,left=100");
       }
       this.alipayClose();
-    }
+    },
   },
   watch: {
     /**

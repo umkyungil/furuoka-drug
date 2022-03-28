@@ -15,15 +15,15 @@
       </li>
       <!-- 멤버리스트에서 자신 이외의 비디오-->
       <li v-for="v in $store.state.data.userList" :key="v.userId">
-        <!-- :userInfo="v": props로 유저정보를 hvideo로 넘기 -->
-        <!-- @switchScreen="switchScreen": hvideo에서 userId를 받는다 -->
-        <hvideo @switchScreen="switchScreen" @preSwitchScreen="preSwitchScreen" :userInfo="v"></hvideo>
+        <!-- [:userInfo="v"]: props로 유저정보를 hvideo로 넘기 -->
+        <!-- [@switchScreen="switchScreen"]: hvideo에서 userId를 받는다 -->
+        <hvideo @switchScreen="switchScreen" :userInfo="v"></hvideo>
       </li>
     </ul>
     <ul class="list-txt" v-show="showModel == 1">
-      <li>
-        <p class="onlyname">{{ $store.state.data.userName }}</p>
-      </li>
+        <li>
+          <p class="onlyname">{{ $store.state.data.userName }}</p>
+        </li>
       <li v-for="v in $store.state.data.userList" :key="v.userId">
         <p class="onlyname">{{ v.displayName }}</p>
       </li>
@@ -48,57 +48,9 @@ export default {
     });
   },
   methods: {
-    preSwitchScreen(userId) {
-      this.count = this.count++;
-      console.log("count: ", this.count);
-      this.myUserId = this.$store.state.data.userId;
-
-      console.log("myId: ", this.$store.state.data.userId);  
-      console.log("userId: ", userId);  
-      
-
-
-      
-      
-      document.getElementById("localVideo").setAttribute("subUserId", userId);
-      RTCClient.instance.subscribeLarge(this.myUserId).then((code) => {
-        setTimeout(() => {
-          // 원격 비디오에 대한 렌더링 창 및 그리기 매개변수 설정
-          RTCClient.instance.setDisplayRemoteVideo(
-            userId,
-            document.getElementById("localVideo"),
-            code
-          );
-        }, 200);
-      }).catch((error) => {
-          console.log('error: ', error);
-      });
-
-      RTCClient.instance.subscribeLarge(userId).then((code) => {
-        setTimeout(() => {
-          // 원격 비디오에 대한 렌더링 창 및 그리기 매개변수 설정
-          RTCClient.instance.setDisplayRemoteVideo(
-            userId,
-            document.getElementById("localVideo"),
-            code
-          );
-        }, 200);
-      }).catch((error) => {
-          console.log('error: ', error);
-      });
-      hvuex({
-        isSwitchScreen: true,
-      });
-    },
-
-
     switchScreen(userId) {
       let subUserId = document.getElementById("localVideo").getAttribute("subUserId");
       this.myUserId = RTCClient.instance.userId;
-
-      console.log("userlist userId1: ", userId);
-      console.log("userlist subUserId: ", subUserId);
-      console.log("userlist myUserId: ", this.myUserId);
 
       this.$nextTick(() => {
         // 멤버리스트의 상대방화면이 메인에 보일때 내 화면을 클릭
@@ -143,7 +95,7 @@ export default {
               );
             }, 200);
           }).catch((error) => {
-              console.log('error---->: ', error);
+              console.log('error: ', error);
           });
           hvuex({
             isSwitchScreen: true,
@@ -155,7 +107,6 @@ export default {
   watch: {
     "$store.state.data.switchUserId"(newVal, oldVal) {
       if (newVal) {
-        console.log("watch newVal:", newVal);
         this.switchScreen(newVal);
         hvuex({ switchUserId: null });
       }
@@ -164,13 +115,10 @@ export default {
       if (JSON.stringify(newVal) == JSON.stringify(oldVal)) {
         return;
       }
-
-      console.log("watch userList: ",  newVal);
+      // 상대방 이름 설정
+      hvuex({ guestName: newVal[0].displayName });
 
       let subUserId = document.getElementById("localVideo").getAttribute("subUserId");
-
-      console.log("watch subUserId: ",  subUserId);
-
       if (subUserId) {
         if (!RTCClient.instance.getUserInfo(subUserId)) {
           if (this.$store.state.data.isPublishScreen) {
