@@ -405,15 +405,14 @@ export default {
       const userName = this.$store.state.data.userName;
       const loginUserId = this.$store.state.data.loginUserId;
 
-      // 상대방 이름 취득(EC시스템의 Order관리의 담당자이름)
+      // 상대방 이름 취득(EC시스템에서 서비스 스텝 이름으로 사용:권한이 일반사용자가 아닌경우만)
       const guestName = this.$store.state.data.guestName;
 
-      console.log("guestName: ", guestName);
-
-      // 결제결과로 받을수 있는 항목에 임의의 데이타 지정
-      const uniqueField = classNum + '_' + userName;
-      var date = new Date();
-      const sod = date.toISOString();      
+      // 결제결과로 받을수 있는 항목에 임의의 데이타 지정      
+      let dateInfo = new Date();
+      const sod = new Date(dateInfo.getTime() - (dateInfo.getTimezoneOffset() * 60000)).toISOString()
+      const uniqueTime = sod.replace('T',' ').substring(0, 19)
+      const uniqueField = 'Wechat' + '_' + uniqueTime + '_' + classNum + '_' + userName;
       
       // ECSystem에서 결제확인 페이지(LiveStreaming)에 데이타 송신(senType:ec)
       if (sendType === "ec") {
@@ -474,9 +473,10 @@ export default {
       const guestName = this.$store.state.data.guestName;
 
       // 결제결과로 받을수 있는 항목에 임의의 데이타 지정
-      const uniqueField = classNum + '_' + userName;
-      let date = new Date();
-      const sod = date.toISOString();
+      const dateInfo = new Date();
+      const sod = new Date(dateInfo.getTime() - (dateInfo.getTimezoneOffset() * 60000)).toISOString()
+      const uniqueTime = sod.replace('T',' ').substring(0, 19)
+      const uniqueField = 'Alipay' + '_' + uniqueTime + '_' + classNum + '_' + userName;
 
       // ECSystem에서 결제(senType:ec)
       if (sendType === "ec") {
