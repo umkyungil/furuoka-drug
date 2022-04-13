@@ -11,11 +11,11 @@
           {{ $store.state.data.userName }}
         </div>
         <video autoplay class="mirrorMode myUserId" :id="$store.state.data.userId" @click="switchScreen(myUserId)"></video>
-        <p class="name">{{ $store.state.data.userName }}</p>
+        <p class="name">{{ $store.state.data.userName }} {{ $store.state.data.userId }}</p>
       </li>
       <!-- 멤버리스트에서 자신 이외의 비디오-->
       <li v-for="v in $store.state.data.userList" :key="v.userId">
-        <!-- [:userInfo="v"]: props로 유저정보를 hvideo로 넘기 -->
+        <!-- [:userInfo="v"]: props로 유저정보를 hvideo로 넘긴다 -->
         <!-- [@switchScreen="switchScreen"]: hvideo에서 userId를 받는다 -->
         <hvideo @switchScreen="switchScreen" :userInfo="v"></hvideo>
       </li>
@@ -115,9 +115,14 @@ export default {
       if (JSON.stringify(newVal) == JSON.stringify(oldVal)) {
         return;
       }
-      // 상대방 이름 설정
-      hvuex({ guestName: newVal[0].displayName });
+      
+      //this.switchScreen(newVal[0].userId);
+      
+      hvuex({
+        guestName: newVal[0].displayName 
+      });
 
+      
       let subUserId = document.getElementById("localVideo").getAttribute("subUserId");
       if (subUserId) {
         if (!RTCClient.instance.getUserInfo(subUserId)) {

@@ -6,8 +6,8 @@
         <span>古冈药业</span>
       </div>
       <div class="main-input shadow">
-        <input type="text" placeholder="请输入用户名" v-model="displayName"/><!-- 사용자 이름-->
-        <input type="text" autocomplete="off" placeholder="请输入会议码" v-model="room" id="channel"/><!-- 방 번호-->
+        <input type="text" placeholder="请输入用户名" v-model="displayName"  readonly/><!-- 사용자 이름-->
+        <input type="text" autocomplete="off" placeholder="请输入会议码" v-model="room" id="channel" v-on:keyup.enter="submit()" /><!-- 방 번호-->
         <button class="hui hui-btn" :disabled="room.length == 0 && displayName" @click="submit()">加入</button>
       </div>
       <div class="main-button">
@@ -30,8 +30,16 @@ export default {
       bgUrl: bgUrl,
     };
   },
-  created() {},
-  mounted() {},
+  created() {
+    // EC에서 접속할때 전송한 사용자 ID의 유무 판단
+    if (!this.$route.query.userId) {
+      this.$router.push('/err');
+      return;
+    }
+  },
+  mounted() {
+    this.displayName = this.$route.query.name;
+  },
   methods: {
     // 채널가입
     submit() {
@@ -41,7 +49,7 @@ export default {
         this.$message("会议码格式不正确, 请输入12位以内纯数字");
         return;
       }
-      hvuex({ classNum: this.room, userName: this.displayName });
+      hvuex({ classNum: this.room, userName: this.displayName, loginUserId: this.$route.query.userId, type: this.$route.query.type });
       
       // 페이지 이동
       this.$router.push("/meet");
@@ -55,7 +63,7 @@ export default {
   min-height: 100vh;
   position: relative;
   background-size: 100% 100%;
-  background-color: rgb(16, 56, 207);
+  //background-color: rgb(16, 56, 207);
   .publisher-btn {
     height: 26px;
     line-height: 26px;

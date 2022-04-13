@@ -15,10 +15,22 @@ const routes = [
     component: resolve => require(["../views/login/login.vue"], resolve)
   },
   {
+    path: "/staff/:userId",
+    component: resolve => require(["../views/login/login.vue"], resolve)
+  },
+  {
     path: "/meet",
     component: resolve => require(["../views/home/index.vue"], resolve)
   },
-  // 일치하지 않는 경우 404가 반환되고 경로는 위에서 아래로 순서대로 일치됩니다. 마지막 *는 모두 일치할 수 있으며,
+  {
+    path: "/err",
+    component: resolve => require(["../views/404.vue"], resolve)
+  },
+  // 일치하지 않는 경우 404가 반환되고 경로는 위에서 아래로 순서대로 일치됩니다. 
+  { 
+    path: '/*', 
+    component: resolve => require(["../views/404.vue"], resolve)
+  }
 ];
 
 const router = new Router({

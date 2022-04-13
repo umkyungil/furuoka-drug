@@ -6,20 +6,23 @@
     <!-- 실제 유저 화면 -->
     <video class="nui-video" :id="userInfo.userId" autoplay></video>
     <div class="nui-video-footer">
-      <span class="user-name">{{userInfo.displayName}}</span>
+      <span class="user-name">{{userInfo.displayName}} {{userInfo.userId}}</span>
       <i class="iconfont" :class="isMuteAudio()?'icon-maikefeng-jingyin-tianchongsvg':'icon-maikefeng-tianchong'"></i>
     </div>
   </div>
 </template>
 
 <script>
+import loginVue from '../views/login/login.vue';
   export default {
     props: ["userInfo"],
     data() {
       return {};
     },
     mounted() {
-      this.$nextTick(() => {});
+      this.$nextTick(() => {
+      
+      });      
     },
     methods: {
       isMuteVideo() {

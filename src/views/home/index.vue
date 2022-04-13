@@ -1,9 +1,15 @@
 <template>
   <div class="rtc-demo" :class="isFullScreen ? 'fullScreen' : ''">
+    <!-- 헤더 -->
     <div class="header" v-show="$store.state.data.classNum">
       <span @click="hCopy" id="channel">会议代码：{{ $store.state.data.classNum }}</span>
       <span>&nbsp;昵称：{{ $store.state.data.userName }}</span>
     </div>
+    
+    <!-- 모달 -->
+    <Modal :show="showModal" @goBack="goBack"></Modal>
+
+    <!-- 바디 -->
     <div class="container">
       <div class="container-box">
         <!-- <div v-if="toastVideo!==''" class="toast-video">{{toastVideo}}<span @click="toastVideo=''">x</span></div> -->
@@ -11,7 +17,7 @@
         <video :class="{ transform: !$store.state.data.isSwitchScreen }" id="localVideo" autoplay></video>
         <!-- <i @click="myFullscreen" :style="!this.isFullScreen ? 'background-image:url('+ fullUrl +')' : 'background-image:url('+ fullOnUrl +')'"></i> -->
       </div>
-      <!-- member list -->
+      <!-- 멤버 리스트 -->
       <div class="container-memberVideo" :class="showSlide ? 'showright' : 'hideright'">
         <div class="memberContainer">
           <!-- <div v-show="isFullScreen" class="memberTab" @click="showSlide = !showSlide">
@@ -40,29 +46,35 @@
         </form>
       </div>
     </div>
+
+    <!-- 푸터 -->
     <div align="center" class="footer">
       <!-- 로고  
       <div class="logo">
         <i class="iconfont icon-rtcyinshipintongxin"></i><span>古冈药妆</span>
       </div> -->
+      <!-- 마이크 -->
       <div class="function">
         <div class="mic">
           <i @click="muteLocalMic" :style=" this.audio ? 'background-image:url(' + micUrl + ')' : 'background-image:url(' + micOnUrl + ')'"></i>
-          <span>静音</span><!--  Mute-->
+          <span>静音</span>
         </div>
+        <!-- 카메라-->
         <div class="camera">
           <i @click="muteLocalCamera" :style=" this.video ? 'background-image:url(' + cameraUrl + ')' : 'background-image:url(' + cameraOnUrl + ')'"></i>
-          <span>摄像头</span><!-- Camera-->
+          <span>摄像头</span>
         </div>
+        <!--방 떠나기 -->
         <div class="off">
           <i @click="leaveShadow = true" :style="'background-image:url(' + offUrl + ')'" ></i>
-          <span>离开会议</span><!--Leave the meeting -->
+          <span>离开会议</span>
         </div>
+        <!-- 화면공유-->
         <div class="screenShare">
           <i @click="publishScreen" 
             :style="!this.$store.state.data.isPublishScreen ? 'background-image:url(' + screenUrl + ')': 'background-image:url(' + screenOnUrl + ')'">
           </i>
-          <span>共享屏幕</span><!-- Share screen-->
+          <span>共享屏幕</span>
         </div>
         <!-- 전체 음소거 
         <div class="muteAll">
@@ -83,25 +95,6 @@
           <span>aliPay</span>
         </div>
       </div>
-      <!-- 환경설정 
-        <div class="nsetting">
-        <el-popover placement="top" width="247" trigger="click">
-          <div>
-            <span style="font-size: 12px">下次加入会议自动触发</span> 다음에 회의에 참가할 때 자동으로 트리거 
-            <br />
-            <hr />
-            <br />
-            <span style="margin-right:20px">c</span>
-            <el-switch active-color="#016EFF" v-model="preSetMic"> </el-switch>
-            <br />
-            <br />
-            <span style="margin-right:20px">打开自己的摄像头</span> 나만의 마이크 켜기 
-            <el-switch active-color="#016EFF" v-model="preSetCamera"></el-switch>
-          </div>
-          <i slot="reference" :style="'background-image:url(' + settingUrl + ')'"></i>
-        </el-popover>
-        <span>设置</span>
-      </div> -->
     </div>
     <div v-show="leaveShadow" class="shadow">
       <div class="leaveShadow">
@@ -136,9 +129,14 @@ import userlist from '../../components/userlist.vue';
 import chatUrl from "../../assets/icon/chat2.png";
 import wechatUrl from "../../assets/icon/wechat.png";
 import alipayUrl from "../../assets/icon/alipay.png";
+import Util from '../../core/utils/utils';
+import Modal from '../../components/common/Modal.vue';
 
 export default {
-  components: { userlist },
+  components: { 
+    userlist,
+    Modal
+  },
   data() {
     return {
       audio: true,
@@ -163,6 +161,8 @@ export default {
       chatUrl: chatUrl,
       wechatUrl: wechatUrl,
       alipayUrl: alipayUrl,
+      
+      showModal: false, // 모달창
       // toastVideo: "", //메인 창 상단에 표시되는 정보
       // Url: muteAllUrl,muteAll
       // muteAllOnUrl: muteAllOnUrl,
@@ -170,18 +170,28 @@ export default {
     };
   },
   created() {
-    if (this.$route.query.type) {
-      // ECSystem에서 URL호출
-      if (this.$route.query.type === "ec") {
-        if (this.$route.query.name && this.$route.query.room && this.$route.query.userId) {
-          this.submit();
-        }
-      // Link URL 또는 초기화면을 통해 방에 접속한 경우(userId 데이타가 없음)
-      } else if (this.$route.query.type === "link") {
-        if (this.$route.query.name && this.$route.query.room) {
-          this.submit();
-        }
-      }  
+    // ECSystem에서 일반사용자가 호출하지 않았을 경우 접속금지
+    if (this.$route.query.userId) {
+      if (this.$route.query.type !== "ec") {
+        this.$router.push('/err')
+        return;
+      }
+      if (!this.$route.query.name) {
+        this.$router.push('/err')
+        return;
+      }
+      if (!this.$route.query.room ) {
+        this.$router.push('/err')
+        return;
+      }
+
+      hvuex({ classNum: this.$route.query.room, userName: this.$route.query.name, loginUserId: this.$route.query.userId, type: this.$route.query.type });
+    } else {
+      // ECSystem에서 스탭 또는 관리자가 호출하지 않았을 경우 접속금지
+      if (!this.$store.state.data.loginUserId) {
+        this.$router.push('/err')
+        return;
+      }
     }
   },
   mounted() {
@@ -193,16 +203,22 @@ export default {
   methods: {
     // 초기화
     init() {
-      this.registerCallBack(); // 콜백등록
+      // 콜백등록
+      this.registerCallBack();
       RTCClient.instance.setAutoPublishSubscribe(true, true);
       RTCClient.instance
         .login(this.$store.state.data.classNum, this.$store.state.data.userName)
         .then((userId) => {
           if (RTCClient.instance.getRoomUserList().length === 0) {
+            // 메세지 표시방법
             // this.$message(
             //   "当前只有你一个人，你可以点击页面顶部【复制会议码】给其他参会人员" 
-            // 현재 귀하뿐입니다. 페이지 상단의 [회의 코드 복사]를 클릭하여 다른 참가자에게 보낼 수 있습니다.
             // );
+
+            // EC시스템에서 관리자 또는 스텝이 접속했을경우 사용자가 없으면 방에서 나간다
+            if (!this.$route.query.userId) {
+              this.showModal = true;
+            }
           }
           hvuex({
             isSwitchScreen: true,
@@ -262,9 +278,6 @@ export default {
         window.parent.postMessage({
           type: "exitRoom"
         }, "*")
-      // Live streaming 브라우저 탭을 종료
-      } else if (sendType === "link") {
-        window.close();
       } else {
         Utils.exitRoom();
       }
@@ -336,31 +349,6 @@ export default {
     //     this.$message("所有静音已关闭"); // 모든 음소거가 꺼져 있습니다
     //   }
     // },
-    submit() {
-      const query_type = this.$route.query.type;
-      const query_name = this.$route.query.name;
-      const query_room = this.$route.query.room
-      const query_userId = this.$route.query.userId
-
-      var reg = new RegExp(/^([0-9]{1,12})?$/g);
-      // URL로 룸에 접속하는 경우(query_name의 값이 존재함)
-      if (query_type) {        
-        if (!reg.test(query_room)) {
-          this.$message("会议码格式不正确, 请输入12位以内纯数字"); // Please enter a number within 12 digits
-          return;
-        }
-        hvuex({ classNum: query_room, userName: query_name, loginUserId: query_userId, type: query_type });
-      } else {
-        // 비디오 채팅에서 이름과 방번호를 입력해서 룸에 접속하는 경우
-        if (!reg.test(this.room)) {
-          this.$message("会议码格式不正确, 请输入12位以内纯数字");
-          return;
-        }
-        hvuex({ classNum: this.room, userName: this.displayName });
-      }
-      // 페이지 이동
-      // this.$router.push("/meet");
-    },
     chat() {      
       alert("由于网络故障，它暂时不可用");
       //let href = "http://localhost:8080";
