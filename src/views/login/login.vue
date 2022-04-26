@@ -3,16 +3,16 @@
     <div class="main">
       <div class="main-title">
         <i class="iconfont icon-rtcyinshipintongxin"></i>
-        <span>古冈药业</span>
+        <span>{{$t("login.title")}}</span>
       </div>
       <div class="main-input shadow">
-        <input type="text" placeholder="请输入用户名" v-model="displayName"  readonly/><!-- 사용자 이름-->
-        <input type="text" autocomplete="off" placeholder="请输入会议码" v-model="room" id="channel" v-on:keyup.enter="submit()" /><!-- 방 번호-->
-        <button class="hui hui-btn" :disabled="room.length == 0 && displayName" @click="submit()">加入</button>
+        <input type="text" placeholder="请输入用户名" v-model="displayName"  readonly/>
+        <input type="text" autocomplete="off" placeholder="room number" v-model="room" id="channel" v-on:keyup.enter="submit()" />
+        <button class="hui hui-btn" :disabled="room.length == 0 && displayName" @click="submit()">{{$t("login.join")}}</button>
       </div>
       <div class="main-button">
         <button type="button" :disabled="room.length > 0 || displayName.length === 0" @click=" room = Math.random().toFixed(5).slice(-5)">
-          创建会议
+          {{$t("login.createRoom")}}
         </button>
       </div>
     </div>
@@ -22,6 +22,7 @@
 <script>
 import bgUrl from "../../assets/icon/bg.jpg";
 import RTCClient from "../../core/rtc-client";
+
 export default {
   data() {
     return {
@@ -38,6 +39,12 @@ export default {
     }
   },
   mounted() {
+    // 다국어 설정
+    if(this.$route.query.i18nextLng) {
+      this.$i18n.locale = this.$route.query.i18nextLng;
+    }
+
+    // 사용자명(스템 또는 관리자) 설정
     this.displayName = this.$route.query.name;
   },
   methods: {

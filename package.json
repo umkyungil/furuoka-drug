@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "aliyun-webrtc-sdk": "^1.13.4",
-    "ant-design-vue": "^1.3.8",
+    "ant-design-vue": "^1.7.8",
     "axios": "^0.19.2",
     "core-js": "^2.6.5",
     "element-ui": "^2.4.5",
@@ -18,7 +18,7 @@
     "node-sass": "^4.12.0",
     "socket.io": "^4.2.0",
     "vant": "^1.6.16",
-    "vue": "^2.6.14",
+    "vue-i18n": "^8.27.1",
     "vue-router": "^3.0.3",
     "vuex": "^3.0.1",
     "webpack": "^4.43.0"

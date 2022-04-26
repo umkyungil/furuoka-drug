@@ -5,15 +5,15 @@
     </div>
     <!-- 멤버리스트-->
     <ul class="list-video" v-show="showModel == 0">
-      <!-- 멤버리스트에서 자신의 비디오-->
+      <!-- 자신의 비디오-->
       <li class="li-my">
         <div class="avatar avatar-name">
           {{ $store.state.data.userName }}
         </div>
         <video autoplay class="mirrorMode myUserId" :id="$store.state.data.userId" @click="switchScreen(myUserId)"></video>
-        <p class="name">{{ $store.state.data.userName }} {{ $store.state.data.userId }}</p>
+        <p class="name">{{ $store.state.data.userName }} </p>
       </li>
-      <!-- 멤버리스트에서 자신 이외의 비디오-->
+      <!-- 자신이외의 비디오-->
       <li v-for="v in $store.state.data.userList" :key="v.userId">
         <!-- [:userInfo="v"]: props로 유저정보를 hvideo로 넘긴다 -->
         <!-- [@switchScreen="switchScreen"]: hvideo에서 userId를 받는다 -->
@@ -107,11 +107,13 @@ export default {
   watch: {
     "$store.state.data.switchUserId"(newVal, oldVal) {
       if (newVal) {
-        this.switchScreen(newVal);
+        this.switchScreen(newVal);  
         hvuex({ switchUserId: null });
       }
     },
     "$store.state.data.userList"(newVal, oldVal) {
+      console.log("newVal: ", newVal);
+      console.log("oldVal: ", oldVal);
       if (JSON.stringify(newVal) == JSON.stringify(oldVal)) {
         return;
       }

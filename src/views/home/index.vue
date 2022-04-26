@@ -2,19 +2,28 @@
   <div class="rtc-demo" :class="isFullScreen ? 'fullScreen' : ''">
     <!-- 헤더 -->
     <div class="header" v-show="$store.state.data.classNum">
-      <span @click="hCopy" id="channel">会议代码：{{ $store.state.data.classNum }}</span>
-      <span>&nbsp;昵称：{{ $store.state.data.userName }}</span>
+      <span @click="hCopy" id="channel">{{$t("header.classNum")}}：{{ $store.state.data.classNum }}</span>
+      <span>&nbsp;{{$t("header.userName")}}：{{ $store.state.data.userName }}</span>
     </div>
     
     <!-- 모달 -->
-    <Modal :show="showModal" @goBack="goBack"></Modal>
+    <div>
+      <a-modal :visible="visible" title="Furuokadrug" @ok="goBack">
+        <template #footer>
+          <!-- <a-button key="back" @click="handleCancel">Return</a-button> -->
+          <a-button key="submit" type="primary" @click="goBack">{{$t("modal.goBack")}}</a-button>
+        </template>
+        <p>{{$t("modal.header")}}</p>
+        <p>{{$t("modal.body")}}</p>
+      </a-modal>
+    </div>
 
     <!-- 바디 -->
     <div class="container">
       <div class="container-box">
         <!-- <div v-if="toastVideo!==''" class="toast-video">{{toastVideo}}<span @click="toastVideo=''">x</span></div> -->
         <div class="center-avatar">{{ $store.state.data.classNum }} </div>
-        <video :class="{ transform: !$store.state.data.isSwitchScreen }" id="localVideo" autoplay></video>
+        <video :class="{ transform: !$store.state.data.isSwitchScreen }" id="localVideo" playsInline autoplay></video>
         <!-- <i @click="myFullscreen" :style="!this.isFullScreen ? 'background-image:url('+ fullUrl +')' : 'background-image:url('+ fullOnUrl +')'"></i> -->
       </div>
       <!-- 멤버 리스트 -->
@@ -33,7 +42,7 @@
         <form class="form-container">
           <h2>Wechat</h2>
           <input id="wechat_amount" type="text" placeholder="请输入总金额" required>
-          <button type="button" class="btn" @click="wechatSubmit()">你想用微信支付吗?</button>
+          <button type="button" class="btn" @click="wechatSubmit()">{{$t("payment.wechat")}}</button>
           <button type="button" class="btn cancel" @click="wechatClose()">Close</button>
         </form>
       </div>
@@ -41,7 +50,7 @@
         <form class="form-container">
           <h2>Alipay</h2>
           <input id="alipay_amount" type="text" placeholder="请输入总金额" required>
-          <button type="button" class="btn" @click="alipaySubmit()">您想用支付宝付款吗?</button>
+          <button type="button" class="btn" @click="alipaySubmit()">{{$t("payment.alipay")}}</button>
           <button type="button" class="btn cancel" @click="alipayClose()">Close</button>
         </form>
       </div>
@@ -49,59 +58,65 @@
 
     <!-- 푸터 -->
     <div align="center" class="footer">
-      <!-- 로고  
-      <div class="logo">
+      <!-- 로고 -->      
+      <!-- <div class="logo">
         <i class="iconfont icon-rtcyinshipintongxin"></i><span>古冈药妆</span>
-      </div> -->
-      <!-- 마이크 -->
+      </div>  -->
       <div class="function">
+        <!-- 마이크 -->
         <div class="mic">
           <i @click="muteLocalMic" :style=" this.audio ? 'background-image:url(' + micUrl + ')' : 'background-image:url(' + micOnUrl + ')'"></i>
-          <span>静音</span>
+          <span>{{$t("footer.mic")}}</span>
         </div>
         <!-- 카메라-->
         <div class="camera">
           <i @click="muteLocalCamera" :style=" this.video ? 'background-image:url(' + cameraUrl + ')' : 'background-image:url(' + cameraOnUrl + ')'"></i>
-          <span>摄像头</span>
+          <span>{{$t("footer.camera")}}</span>
         </div>
         <!--방 떠나기 -->
         <div class="off">
           <i @click="leaveShadow = true" :style="'background-image:url(' + offUrl + ')'" ></i>
-          <span>离开会议</span>
+          <span>{{$t("footer.off")}}</span>
         </div>
         <!-- 화면공유-->
         <div class="screenShare">
           <i @click="publishScreen" 
             :style="!this.$store.state.data.isPublishScreen ? 'background-image:url(' + screenUrl + ')': 'background-image:url(' + screenOnUrl + ')'">
           </i>
-          <span>共享屏幕</span>
+          <span>{{$t("footer.screenShare")}}</span>
         </div>
         <!-- 전체 음소거 
         <div class="muteAll">
           <i @click="muteAll" :style="!this.muteAllState ? 'background-image:url(' + muteAllUrl + ')' : 'background-image:url(' + muteAllOnUrl + ')'"></i>
           <span>全员静音</span>
-        </div> -->
-        <div class="chat">
-          <i @click="chat()" :style="'background-image:url(' + chatUrl +   ')'" ></i>
-          <span>聊天</span>
-        </div>
-        <!-- 합계 --> 
+        </div> -->        
+        <!-- Wechat결제 --> 
         <div class="wechatBtn">
           <i @click="wechatOpen()" :style="'background-image:url(' + wechatUrl +   ')'" ></i>
-          <span>WechatPay</span>
+          <span>{{$t("footer.wechat")}}</span>
         </div>
+        <!-- Alipay결제 --> 
         <div class="alipayBtn">
           <i @click="alipayOpen()" :style="'background-image:url(' + alipayUrl +   ')'" ></i>
-          <span>aliPay</span>
+          <span>{{$t("footer.alipay")}}</span>
+        </div>
+        <!-- 카메라 선택 -->
+        <div class="cameraSelect">
+          <span>Camera Select</span>
+          <select id="cameras" v-on:change="handleCameraChange">
+            <option v-for="camera in cameras" v-bind:value="camera.deviceId" v-bind:key="camera.id">
+              {{ camera.label }}
+            </option>
+          </select>          
         </div>
       </div>
     </div>
     <div v-show="leaveShadow" class="shadow">
       <div class="leaveShadow">
-        <p>你想要结束会议吗？</p>
+        <p>{{$t("footer.leaveShadow")}}</p>
         <div>
-          <span @click="leaveShadow = false">取消</span>
-          <span class="goBack" @click="goBack">结束会议</span>
+          <span @click="leaveShadow = false">{{$t("footer.cancel")}}</span>
+          <span class="goBack" @click="goBack">{{$t("footer.goBack")}}</span>
         </div>
       </div>
     </div>
@@ -130,19 +145,17 @@ import chatUrl from "../../assets/icon/chat2.png";
 import wechatUrl from "../../assets/icon/wechat.png";
 import alipayUrl from "../../assets/icon/alipay.png";
 import Util from '../../core/utils/utils';
-import Modal from '../../components/common/Modal.vue';
 
 export default {
   components: { 
     userlist,
-    Modal
   },
   data() {
     return {
       audio: true,
       video: true,
-      leaveShadow: false, //창을 떠나
-      isFullScreen: false, //전체 화면 상태
+      leaveShadow: false, // 방 떠나기
+      isFullScreen: false, //전체 화면
       showSlide: true, //전체 화면 상태 측면 표시 상태
       offUrl: offUrl,
       micUrl: micUrl,
@@ -158,11 +171,15 @@ export default {
       micListOffUrl: micListOffUrl,
       preSetMic: true, //기본 마이크
       preSetCamera: true, //기본 카메라
+      
       chatUrl: chatUrl,
       wechatUrl: wechatUrl,
       alipayUrl: alipayUrl,
+      cameras: [],
       
-      showModal: false, // 모달창
+      visible: false, // 모달창
+      ModalText: 'Content of the modal',
+      confirmLoading: false,
       // toastVideo: "", //메인 창 상단에 표시되는 정보
       // Url: muteAllUrl,muteAll
       // muteAllOnUrl: muteAllOnUrl,
@@ -203,6 +220,17 @@ export default {
   methods: {
     // 초기화
     init() {
+      // 룸에 들어가서 30분후에도 혼자인 경우 강퇴
+      // setTimeout(() => {this.forceExit()}, 60.0*1000);
+
+      // 다국어 설정
+      if(this.$route.query.i18nextLng) {
+        this.$i18n.locale = this.$route.query.i18nextLng;
+      }
+
+      // 카메라 설정
+      this.getCameras();
+      
       // 콜백등록
       this.registerCallBack();
       RTCClient.instance.setAutoPublishSubscribe(true, true);
@@ -215,9 +243,10 @@ export default {
             //   "当前只有你一个人，你可以点击页面顶部【复制会议码】给其他参会人员" 
             // );
 
-            // EC시스템에서 관리자 또는 스텝이 접속했을경우 사용자가 없으면 방에서 나간다
+            // EC시스템에서 관리자 또는 스텝이 접속했을경우 사용자가 없으면 모달을 뛰우고 강퇴 시킨다.
+            // this.$route.query.userId는 login.vue로 관리자가 접속했을때 userId
             if (!this.$route.query.userId) {
-              this.showModal = true;
+              this.visible = true;
             }
           }
           hvuex({
@@ -270,7 +299,7 @@ export default {
             break;
         }
       });
-    },
+    },    
     goBack() {
       const sendType = this.$store.state.data.type;
       // ECSystem 종료할 경우 type을 넘겨서 랜딩페이지로 이동하게 함
@@ -309,7 +338,7 @@ export default {
     // 화면 공유
     publishScreen() {
       if (!this.$store.state.data.isPublish) {
-        Util.toast("未推流"); // 未推流
+        Util.toast("未推流");
         return false;
       }
       if (this.$store.state.data.isPublishScreen) {
@@ -349,8 +378,8 @@ export default {
     //     this.$message("所有静音已关闭"); // 모든 음소거가 꺼져 있습니다
     //   }
     // },
-    chat() {      
-      alert("由于网络故障，它暂时不可用");
+    chat() {
+      this.$message("由于网络故障，它暂时不可用");
       //let href = "http://localhost:8080";
       // let href = "https://umkyungil.github.io/furuokadrug-twitter/#/";
       // let w = 450;
@@ -360,7 +389,79 @@ export default {
 
       // window.open(href, "pop_name", "width="+w+", height="+h+", left="+xPos+", top="+yPos+", menubar=yes, status=yes, titlebar=yes, resizable=yes");
     },
+    handleOk(e) {
+      this.ModalText = 'The modal will be closed after two seconds';
+      this.confirmLoading = true;
+      setTimeout(() => {
+          this.visible = false;
+          this.confirmLoading = false;
+      }, 2000);
+    },
+    async handleCameraChange(event) {
+      // 선택된 카메라 장치 아이디
+      await this.getMedia(event.target.value)
+      
+    },
+    async getCameras() {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const cameraDevices = devices.filter(device => device.kind === "videoinput");
+        this.cameras = cameraDevices
+      } catch (e) {
+        console.log(e);
+      }     
+    },
 
+    // localVideo에 스트림 출력
+    async getMedia(deviceId) {
+      const userId = this.$store.state.data.userId;
+      const localVideo = document.getElementById("localVideo");
+
+      console.log("deviceId: ", deviceId);
+
+      // 후면 카메라
+      // const backConstrains = { audio: true, video: { facingMode: "environment" } }
+      // 셀피 카메라
+      const initialConstrains = { audio: true, video: { facingMode: "user" } };
+      // 특정 카메라 디바이스 선택(해당 디바이스가 없으면 비디오가 표시되지 않음)
+      const cameraConstrains = { audio: true, deviceId: { exact: deviceId } };
+      
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(
+          deviceId? cameraConstrains : initialConstrains
+        )
+
+        
+        
+        // console.log("$store.state.data.userList: ", this.$store.state.data.userList)
+        
+        const chgStream = document.getElementById(userId).srcObj = stream
+        console.log("chgStream: ", chgStream);
+        
+        Utils.startPreview(chgStream).then((re) => {
+          // 로컬 비디오에 대한 렌더링 창 및 그리기 매개변수 설정
+          RTCClient.instance.setDisplayLocalVideo(
+            document.getElementById("localVideo"),
+            1
+          );
+        });
+
+        
+        
+
+        
+
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    forceExit() {
+      // 채팅방에 일정시간동안 혼자인 경우 강제 퇴장
+      if (RTCClient.instance.getRoomUserList().length === 0) {
+        this.goBack();
+      }
+    },    
     // 결제 
     wechatOpen() {
       document.getElementById("wechatForm").style.display = "block";

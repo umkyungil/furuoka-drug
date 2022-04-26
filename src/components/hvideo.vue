@@ -6,7 +6,7 @@
     <!-- 실제 유저 화면 -->
     <video class="nui-video" :id="userInfo.userId" autoplay></video>
     <div class="nui-video-footer">
-      <span class="user-name">{{userInfo.displayName}} {{userInfo.userId}}</span>
+      <span class="user-name">{{userInfo.displayName}}</span>
       <i class="iconfont" :class="isMuteAudio()?'icon-maikefeng-jingyin-tianchongsvg':'icon-maikefeng-tianchong'"></i>
     </div>
   </div>
@@ -21,7 +21,8 @@ import loginVue from '../views/login/login.vue';
     },
     mounted() {
       this.$nextTick(() => {
-      
+        console.log("this.userInfo.userId: ", this.userInfo.userId)
+        this.$emit("switchScreen", this.userInfo.userId);
       });      
     },
     methods: {

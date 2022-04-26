@@ -3,14 +3,14 @@ import RTCClient from "../rtc-client";
 import state from '../../vuex/state';
 export default class Util {
     /**
-     * 显示信息
+     * 정보 표시
      * @param {*} v 
      */
     static toast(v) {
         Message(v);
     }
     /**
-     * 复制
+     * 복사
      * @param {*} id 
      */
     static hCopy(id) {
@@ -40,7 +40,7 @@ export default class Util {
     static inputCopy(id) {
         try {
             var Url2 = document.getElementById(id);
-            Url2.select(); // 选择对象
+            Url2.select(); // 개체 선택
             document.execCommand("Copy");
             return true;
         } catch (error) {
@@ -49,7 +49,7 @@ export default class Util {
         }
     }
     /**
-  * 获取浏览器地址栏参数 브라우저 주소 표시줄 매개변수 가져오기
+  * 브라우저 주소 표시줄 매개변수 가져오기(쿼리스트링)
   * @param {*} url 
   * @param {*} name 
   */
@@ -77,14 +77,18 @@ export default class Util {
             });
     }
     /**
-     * 미리보기 시작
+     * 미리보기
      */
     static startPreview(view) {
         return new Promise((resolve,reject)=>{
             RTCClient.instance
-            .startPreview(view)
-            .then(() => {
+            .startPreview(view) // MediaStream을 얻는다
+            .then(() => {                
                 AppConfig.localStream = view.srcObject;
+                // 현재 사용하는 카메라 
+                var mediaStreamTracks = view.srcObject.getVideoTracks()[0];
+                console.log("mediaStreamTracks: ", mediaStreamTracks);
+                
                 hvuex({ isPreview: true });
                 resolve();
             })
@@ -95,7 +99,7 @@ export default class Util {
         })
     }
     /**
-     * 显示远端用户
+     * 원격 사용자 표시
      * @param {*} data 
      */
     static showRemoteVideo(data) {
@@ -135,9 +139,9 @@ export default class Util {
         if (code == 1) {
             messageTxt = "10分钟体验时间已到";
         } else if (code == 2) {
-            messageTxt = "10分钟体验时间已到";
+            messageTxt = "10分钟体验时间已到"; // 체험시간 10분 종료
         } else {
-            messageTxt = "同一个用户ID在其他端登录";
+            messageTxt = "同一个用户ID在其他端登录"; // 다른 쪽에서 동일한 사용자 ID로 로그인
         }
         hv.$alert(messageTxt, "", {
             confirmButtonText: '确定',
