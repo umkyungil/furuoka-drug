@@ -21,7 +21,7 @@
     mounted() {
       this.$nextTick(() => {
         // console.log("this.userInfo.userId: ", this.userInfo.userId)
-        // this.$emit("switchScreen", this.userInfo.userId);
+        this.$emit("switchScreen", this.userInfo.userId);
       });      
     },
     methods: {
