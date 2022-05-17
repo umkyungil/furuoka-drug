@@ -4,27 +4,22 @@
     <div class="header" v-show="$store.state.data.classNum">
       <span @click="hCopy" id="channel">{{$t("header.classNum")}}：{{ $store.state.data.classNum }}</span>
       <span>&nbsp;{{$t("header.userName")}}：{{ $store.state.data.userName }}</span>
-    </div>
-    
+    </div>    
     <!-- 모달 -->
     <div>
       <a-modal :visible="visible" title="Furuokadrug" @ok="goBack">
         <template #footer>
-          <!-- <a-button key="back" @click="handleCancel">Return</a-button> -->
           <a-button key="submit" type="primary" @click="goBack">{{$t("modal.goBack")}}</a-button>
         </template>
         <p>{{$t("modal.header")}}</p>
         <p>{{$t("modal.body")}}</p>
       </a-modal>
     </div>
-
     <!-- 바디 -->
     <div class="container">
       <div class="container-box">
-        <!-- <div v-if="toastVideo!==''" class="toast-video">{{toastVideo}}<span @click="toastVideo=''">x</span></div> -->
         <div class="center-avatar">{{ $store.state.data.classNum }} </div>
         <video :class="{ transform: !$store.state.data.isSwitchScreen }" id="localVideo" playsInline autoplay></video>
-        <!-- <i @click="myFullscreen" :style="!this.isFullScreen ? 'background-image:url('+ fullUrl +')' : 'background-image:url('+ fullOnUrl +')'"></i> -->
       </div>
       <!-- 멤버 리스트 -->
       <div class="container-memberVideo" :class="showSlide ? 'showright' : 'hideright'">
@@ -55,7 +50,6 @@
         </form>
       </div>
     </div>
-
     <!-- 푸터 -->
     <div align="center" class="footer">
       <!-- 로고 -->      
@@ -85,11 +79,6 @@
           </i>
           <span>{{$t("footer.screenShare")}}</span>
         </div>
-        <!-- 전체 음소거 
-        <div class="muteAll">
-          <i @click="muteAll" :style="!this.muteAllState ? 'background-image:url(' + muteAllUrl + ')' : 'background-image:url(' + muteAllOnUrl + ')'"></i>
-          <span>全员静音</span>
-        </div> -->        
         <!-- Wechat결제 --> 
         <div class="wechatBtn">
           <i @click="wechatOpen()" :style="'background-image:url(' + wechatUrl +   ')'" ></i>
@@ -134,7 +123,7 @@ import cameraOnUrl from "../../assets/icon/camera-on.png";
 import screenUrl from "../../assets/icon/screen.png";
 import screenOnUrl from "../../assets/icon/screen-on.png";
 // import muteAllUrl from "../../assets/icon/muteall.png";
-// import muteAllOnUrl from "../../assets/icon/muteall-on.png";
+
 import fullUrl from "../../assets/icon/full.png";
 import fullOnUrl from "../../assets/icon/full-on.png";
 import settingUrl from "../../assets/icon/setting.png";
@@ -180,9 +169,7 @@ export default {
       visible: false, // 모달창
       ModalText: 'Content of the modal',
       confirmLoading: false,
-      // toastVideo: "", //메인 창 상단에 표시되는 정보
-      // Url: muteAllUrl,muteAll
-      // muteAllOnUrl: muteAllOnUrl,
+      
       // muteAllState: false, //모든 구성원은 침묵
     };
   },
@@ -220,15 +207,15 @@ export default {
   methods: {
     // 초기화
     init() {
-      // 룸에 들어가서 30분후에도 혼자인 경우 강퇴
-      // setTimeout(() => {this.forceExit()}, 60.0*1000);
+      // 룸에 들어가서 10분후에도 혼자인 경우 강퇴(1분:60000)
+      setTimeout(() => {this.forceExit()}, 600000);
 
       // 다국어 설정
       if(this.$route.query.i18nextLng) {
         this.$i18n.locale = this.$route.query.i18nextLng;
       }
 
-      // 카메라 설정
+      // 카메라 장치를 전부 추출
       this.getCameras();
       
       // 콜백등록
@@ -243,9 +230,10 @@ export default {
             //   "当前只有你一个人，你可以点击页面顶部【复制会议码】给其他参会人员" 
             // );
 
-            // EC시스템에서 관리자 또는 스텝이 접속했을경우 사용자가 없으면 모달을 뛰우고 강퇴 시킨다.
+            // EC시스템에서 관리자 또는 스텝이 접속했을 경우 사용자가 없으면 모달을 뛰우고 강퇴 시킨다.
             // this.$route.query.userId는 login.vue로 관리자가 접속했을때 userId
             if (!this.$route.query.userId) {
+              // 모달창 뛰우기
               this.visible = true;
             }
           }
@@ -255,7 +243,7 @@ export default {
             isPublish: true,
           }).then(() => {
             Utils.startPreview(document.getElementById(userId)).then((re) => {
-              // 로컬 비디오에 대한 렌더링 창 및 그리기 매개변수 설정
+              // 로컬 비디오에 대한 렌더링 창 및 그리기 매개변수 설정(매개변수:1)
               RTCClient.instance.setDisplayLocalVideo(
                 document.getElementById("localVideo"),
                 1
@@ -367,17 +355,6 @@ export default {
         Utils.hCopy("channel") ? "The meeting code has been copied" : ""
       );
     },
-    // 모든 멤버 음소거 켜기/끄기)
-    // muteAll() {
-    //   this.muteAllState = !this.muteAllState;
-    //   if (this.muteAllState) {
-    //     RTCClient.instance.muteAllRemoteAudioPlaying(true);
-    //     this.$message("所有当前成员都已被静音"); // 모든 현재 회원이 음소거되었습니다
-    //   } else {
-    //     RTCClient.instance.muteAllRemoteAudioPlaying(false);
-    //     this.$message("所有静音已关闭"); // 모든 음소거가 꺼져 있습니다
-    //   }
-    // },
     chat() {
       this.$message("由于网络故障，它暂时不可用");
       //let href = "http://localhost:8080";
@@ -397,61 +374,46 @@ export default {
           this.confirmLoading = false;
       }, 2000);
     },
+    // 선택된 카메라 장치 아이디
     async handleCameraChange(event) {
-      // 선택된 카메라 장치 아이디
-      await this.getMedia(event.target.value)
-      
+      await this.getMedia(event.target.value)      
     },
+    // 카메라 장치를 전부 추출
     async getCameras() {
       try {
         const devices = await navigator.mediaDevices.enumerateDevices();
         const cameraDevices = devices.filter(device => device.kind === "videoinput");
         this.cameras = cameraDevices
       } catch (e) {
-        console.log(e);
+        console.log("getCameras: ", e);
       }     
     },
-
-    // localVideo에 스트림 출력
+    // 선택된 카메라로 전환
     async getMedia(deviceId) {
       const userId = this.$store.state.data.userId;
-      const localVideo = document.getElementById("localVideo");
-
-      console.log("deviceId: ", deviceId);
 
       // 후면 카메라
       // const backConstrains = { audio: true, video: { facingMode: "environment" } }
       // 셀피 카메라
       const initialConstrains = { audio: true, video: { facingMode: "user" } };
       // 특정 카메라 디바이스 선택(해당 디바이스가 없으면 비디오가 표시되지 않음)
-      const cameraConstrains = { audio: true, deviceId: { exact: deviceId } };
-      
-      let stream;
+      const cameraConstrains = { audio: true, video: {deviceId: { exact: deviceId } } };
+            
       try {
-        stream = await navigator.mediaDevices.getUserMedia(
+        // 스트림 설정
+        const stream = await navigator.mediaDevices.getUserMedia(
           deviceId? cameraConstrains : initialConstrains
         )
-
-        
-        
-        // console.log("$store.state.data.userList: ", this.$store.state.data.userList)
-        
-        const chgStream = document.getElementById(userId).srcObj = stream
-        console.log("chgStream: ", chgStream);
-        
-        Utils.startPreview(chgStream).then((re) => {
-          // 로컬 비디오에 대한 렌더링 창 및 그리기 매개변수 설정
-          RTCClient.instance.setDisplayLocalVideo(
-            document.getElementById("localVideo"),
-            1
-          );
-        });
-
-        
-        
-
-        
-
+        // 멤버리스트에 스트림 대입
+        const chgStream = document.getElementById(userId).srcObject = stream
+        // 멤버리스트 카메라 전환
+        AppConfig.localStream  = chgStream;
+        // 메인화면 카메라 전환(메인화면 다시그리기)
+        RTCClient.instance._localCameraStream = chgStream;
+        RTCClient.instance.setDisplayLocalVideo(
+          document.getElementById("localVideo"),
+          1
+        );
       } catch (e) {
         console.log(e);
       }

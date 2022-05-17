@@ -21,8 +21,8 @@ export default class RTCClient {
         this._currentRole = 0; // 默认当前角色是主播
         this._clinet.enableHighDefinitionPreview(false);
         this._remoteStreamList = [];
-        this._localScreenStream = null; // 保存屏幕流 meadiaStream
-        this._localCameraStream = null; // 保存相机流 meadiaStream
+        this._localScreenStream = null; // 화면 흐름 저장 meadiaStream
+        this._localCameraStream = null; // 카메라 스트림 저장 meadiaStream
         this._userMuteInfo = {};// {userId:{isAudioMute:false,isVideoMute:false}};
         /**
          * 默认参数
@@ -147,7 +147,7 @@ export default class RTCClient {
         return this._isSuppert();
     }
     /**
-     * 指定摄像头
+     * 카메라 지정
      * @param {*} deviceId 
      */
     currentCamera(deviceId) {
@@ -504,7 +504,7 @@ export default class RTCClient {
         })
     }
     /**
-     * 为本地的视频设置渲染窗口以及绘制参数
+     * 로컬 비디오에 대한 렌더링 창 및 그리기 매개변수 설정
      * @param {*} video 
      * @param {*} streamType 
      */
@@ -600,13 +600,13 @@ export default class RTCClient {
         this._clinet.muteRemoteAudioPlaying(muted);
     }
     /**
-     * 获取远端用户在线列表
+     * 원격 사용자의 리스트 가져오기
      */
     getRoomUserList() {
         return this._clinet.getUserList();
     }
     /**
-     * 离开频道
+     * 채널을 떠나다
      */
     logout() {
         return new Promise((resolve, reject) => {
@@ -655,7 +655,7 @@ export default class RTCClient {
         })
     }
     /**
-     * 执行自动推流
+     * 자동 스트리밍 실행
      */
     _executeAutoPublish() {
         return new Promise((resolve, reject) => {

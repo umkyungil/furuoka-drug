@@ -43,30 +43,26 @@ export default {
     };
   },
   mounted() {
-    this.$nextTick(() => {
-      
-    });
+    this.$nextTick(() => {});
   },
   methods: {
     switchScreen(userId) {
       let subUserId = document.getElementById("localVideo").getAttribute("subUserId");
       this.myUserId = RTCClient.instance.userId;
 
+
+      console.log("subUserId: ", subUserId);
+      console.log("userId: ", userId);
+      console.log("myUserId: ", this.myUserId);
+
+
       this.$nextTick(() => {
-        // 멤버리스트의 상대방화면이 메인에 보일때 내 화면을 클릭
-        // 멤버리스트의 상대방화면이 메인에 보일때 상대방 화면을 클릭(메인화면은 보이지 않게 된다)
         if (subUserId) {
           var _userId = subUserId;
           RTCClient.instance.subscribe(_userId).then((code) => {
-            RTCClient.instance.setDisplayRemoteVideo(
-              _userId,
-              document.getElementById(_userId),
-              code
-            );
+            RTCClient.instance.setDisplayRemoteVideo(_userId,document.getElementById(_userId), code);
           });
         }
-        // 멤버리스트의 내 화면이 메인에 보일때 내 화면을 클릭
-        // 멤버리스트의 상대방화면이 메인에 보일때 내 화면을 클릭
         if (userId == this.myUserId || userId == subUserId) {
           if (userId == this.myUserId) {
             setTimeout(() => {
@@ -83,7 +79,6 @@ export default {
           }
           return;
         } else {
-          // 멤버리스트의 내 화면이 메인에 보일때 상대방 화면을 클릭
           document.getElementById("localVideo").setAttribute("subUserId", userId);
           RTCClient.instance.subscribeLarge(userId).then((code) => {
             setTimeout(() => {
@@ -112,14 +107,15 @@ export default {
       }
     },
     "$store.state.data.userList"(newVal, oldVal) {
-      console.log("newVal: ", newVal);
-      console.log("oldVal: ", oldVal);
       if (JSON.stringify(newVal) == JSON.stringify(oldVal)) {
         return;
       }
       
-      //this.switchScreen(newVal[0].userId);
+      console.log("newVal>>>>>>>>>>: ", newVal[0].userId);
+      console.log("oldVal>>>>>>>>>>: ", oldVal[0].userId);
+      this.switchScreen(newVal[0].userId);
       
+      // 이름 저장(ECSystem에서 전달할 값)
       hvuex({
         guestName: newVal[0].displayName 
       });

@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import loginVue from '../views/login/login.vue';
   export default {
     props: ["userInfo"],
     data() {
@@ -21,8 +20,8 @@ import loginVue from '../views/login/login.vue';
     },
     mounted() {
       this.$nextTick(() => {
-        console.log("this.userInfo.userId: ", this.userInfo.userId)
-        this.$emit("switchScreen", this.userInfo.userId);
+        // console.log("this.userInfo.userId: ", this.userInfo.userId)
+        // this.$emit("switchScreen", this.userInfo.userId);
       });      
     },
     methods: {
