@@ -85,10 +85,6 @@ export default class Util {
             .startPreview(view) // MediaStream을 얻는다
             .then(() => {                
                 AppConfig.localStream = view.srcObject;
-                // 현재 사용하는 카메라 
-                //var mediaStreamTracks = view.srcObject.getVideoTracks()[0];
-                //console.log("mediaStreamTracks: ", mediaStreamTracks);
-                
                 hvuex({ isPreview: true });
                 resolve();
             })

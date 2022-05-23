@@ -130,7 +130,6 @@ import settingUrl from "../../assets/icon/setting.png";
 import micListUrl from "../../assets/icon/micList.png";
 import micListOffUrl from "../../assets/icon/micList-off.png";
 import userlist from '../../components/userlist.vue';
-import chatUrl from "../../assets/icon/chat2.png";
 import wechatUrl from "../../assets/icon/wechat.png";
 import alipayUrl from "../../assets/icon/alipay.png";
 import Util from '../../core/utils/utils';
@@ -161,7 +160,6 @@ export default {
       preSetMic: true, //기본 마이크
       preSetCamera: true, //기본 카메라
       
-      chatUrl: chatUrl,
       wechatUrl: wechatUrl,
       alipayUrl: alipayUrl,
       cameras: [],
@@ -208,7 +206,7 @@ export default {
     // 초기화
     init() {
       // 룸에 들어가서 10분후에도 혼자인 경우 강퇴(1분:60000)
-      setTimeout(() => {this.forceExit()}, 600000);
+      setTimeout(() => {this.forceExit()}, 600000);      
 
       // 다국어 설정
       if(this.$route.query.i18nextLng) {
@@ -354,17 +352,6 @@ export default {
       this.$message(
         Utils.hCopy("channel") ? "The meeting code has been copied" : ""
       );
-    },
-    chat() {
-      this.$message("由于网络故障，它暂时不可用");
-      //let href = "http://localhost:8080";
-      // let href = "https://umkyungil.github.io/furuokadrug-twitter/#/";
-      // let w = 450;
-      // let h = 800;
-      // let xPos = (document.body.offsetWidth-w); //오른쪽 정렬
-      // let yPos = (document.body.offsetHeight/2) - (h/2);
-
-      // window.open(href, "pop_name", "width="+w+", height="+h+", left="+xPos+", top="+yPos+", menubar=yes, status=yes, titlebar=yes, resizable=yes");
     },
     handleOk(e) {
       this.ModalText = 'The modal will be closed after two seconds';

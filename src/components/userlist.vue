@@ -50,12 +50,6 @@ export default {
       let subUserId = document.getElementById("localVideo").getAttribute("subUserId");
       this.myUserId = RTCClient.instance.userId;
 
-
-      console.log("subUserId: ", subUserId);
-      console.log("userId: ", userId);
-      console.log("myUserId: ", this.myUserId);
-
-
       this.$nextTick(() => {
         if (subUserId) {
           var _userId = subUserId;
@@ -110,12 +104,29 @@ export default {
       if (JSON.stringify(newVal) == JSON.stringify(oldVal)) {
         return;
       }
+
+      // 접속한 2사람 전부 메인화면이 안나옴
+      // this.switchScreen(newVal[0].userId); 
+
+      // 나중에 접속한 사람의 메인화면만 변경
+      // this.switchScreen(newVal[0].userId);
+      // hvuex({ switchUserId: null });
+
+      // 접속한 2사람 전부 자신의 화면이 메인화면에 나옴
+      // this.switchScreen(newVal);
+      // hvuex({ switchUserId: null });
+
+      // 접속한 2사람 전부 메인화면이 안나옴
+      // this.switchScreen(newVal[0].userId);
+      // hvuex({ switchUserId: null });
+      // hvideo.vue 파일도 변경
+      // this.$emit("switchScreen", this.userInfo.userId);
+
+      // 처음에 접속한 사람의 메인화면만 변경 
+      // hvideo.vue 파일도 변경
+
       
-      console.log("newVal>>>>>>>>>>: ", newVal[0].userId);
-      console.log("oldVal>>>>>>>>>>: ", oldVal[0].userId);
-      this.switchScreen(newVal[0].userId);
-      
-      // 이름 저장(ECSystem에서 전달할 값)
+      // 상대방 이름 취득(EC시스템의 Order관리의 고객을 담당한 스텝이름)
       hvuex({
         guestName: newVal[0].displayName 
       });

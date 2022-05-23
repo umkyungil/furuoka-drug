@@ -20,8 +20,11 @@
     },
     mounted() {
       this.$nextTick(() => {
-        // console.log("this.userInfo.userId: ", this.userInfo.userId)
-        this.$emit("switchScreen", this.userInfo.userId);
+        // 룸 인원이 2명일때 화면전환을 위해 시간차를 둠
+        setTimeout(() => {
+          this.$emit("switchScreen", this.userInfo.userId);
+        }, 2000)
+        
       });      
     },
     methods: {
