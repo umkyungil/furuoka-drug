@@ -20,7 +20,8 @@
     },
     mounted() {
       this.$nextTick(() => {
-        // 룸 인원이 2명일때 화면전환을 위해 시간차를 둠
+        // 룸 인원이 2명일때 화면전환을 위해 시간차를 두고 부모의 switchScreen 메소드를 호출한다
+        // ※시간차를 두지 않으면 1명의 화면만 바뀐다. 이유는 모름
         setTimeout(() => {
           this.$emit("switchScreen", this.userInfo.userId);
         }, 2000)

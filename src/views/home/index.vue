@@ -18,7 +18,7 @@
     <!-- 바디 -->
     <div class="container">
       <div class="container-box">
-        <div class="center-avatar">{{ $store.state.data.classNum }} </div>
+        <!-- <div class="center-avatar">{{ $store.state.data.classNum }} </div> -->
         <video :class="{ transform: !$store.state.data.isSwitchScreen }" id="localVideo" playsInline autoplay></video>
       </div>
       <!-- 멤버 리스트 -->
@@ -122,7 +122,6 @@ import cameraUrl from "../../assets/icon/camera.png";
 import cameraOnUrl from "../../assets/icon/camera-on.png";
 import screenUrl from "../../assets/icon/screen.png";
 import screenOnUrl from "../../assets/icon/screen-on.png";
-// import muteAllUrl from "../../assets/icon/muteall.png";
 
 import fullUrl from "../../assets/icon/full.png";
 import fullOnUrl from "../../assets/icon/full-on.png";
@@ -159,16 +158,12 @@ export default {
       micListOffUrl: micListOffUrl,
       preSetMic: true, //기본 마이크
       preSetCamera: true, //기본 카메라
-      
       wechatUrl: wechatUrl,
       alipayUrl: alipayUrl,
       cameras: [],
-      
       visible: false, // 모달창
       ModalText: 'Content of the modal',
       confirmLoading: false,
-      
-      // muteAllState: false, //모든 구성원은 침묵
     };
   },
   created() {
