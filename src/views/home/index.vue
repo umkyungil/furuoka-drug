@@ -36,7 +36,7 @@
       <div class="form-popup" id="wechatForm">
         <form class="form-container">
           <h2>Wechat</h2>
-          <input id="wechat_amount" type="text" placeholder="请输入总金额" required>
+          <input id="wechat_amount" type="text" placeholder="请以日元输入总金额" required>
           <button type="button" class="btn" @click="wechatSubmit()">{{$t("payment.wechat")}}</button>
           <button type="button" class="btn cancel" @click="wechatClose()">Close</button>
         </form>
@@ -44,7 +44,7 @@
       <div class="form-popup" id="alipayForm">
         <form class="form-container">
           <h2>Alipay</h2>
-          <input id="alipay_amount" type="text" placeholder="请输入总金额" required>
+          <input id="alipay_amount" type="text" placeholder="请以日元输入总金额" required>
           <button type="button" class="btn" @click="alipaySubmit()">{{$t("payment.alipay")}}</button>
           <button type="button" class="btn cancel" @click="alipayClose()">Close</button>
         </form>
@@ -434,8 +434,6 @@ export default {
 
       // Query Parameter취득
       const sendType = this.$store.state.data.type;
-      const classNum = this.$store.state.data.classNum;
-      const userName = this.$store.state.data.userName;
       const loginUserId = this.$store.state.data.loginUserId;
 
       // 상대방 이름 취득(EC시스템에서 서비스 스텝 이름으로 사용:권한이 일반사용자가 아닌경우만)
@@ -443,9 +441,8 @@ export default {
 
       // 결제결과로 받을수 있는 항목에 임의의 데이타 지정      
       let dateInfo = new Date();
-      const sod = new Date(dateInfo.getTime() - (dateInfo.getTimezoneOffset() * 60000)).toISOString()
-      const uniqueTime = sod.replace('T',' ').substring(0, 19)
-      const uniqueField = 'Wechat' + '_' + uniqueTime + '_' + classNum + '_' + userName;
+      const sod = new Date(dateInfo.getTime() - (dateInfo.getTimezoneOffset() * 60000)).toISOString();
+      const uniqueField = 'wechat' + '_' + loginUserId + '_' + sod;
       
       // ECSystem에서 결제확인 페이지(LiveStreaming)에 데이타 송신(senType:ec)
       if (sendType === "ec") {
@@ -498,8 +495,6 @@ export default {
       
       // Query Parameter취득
       const sendType = this.$store.state.data.type;
-      const classNum = this.$store.state.data.classNum;
-      const userName = this.$store.state.data.userName;
       const loginUserId = this.$store.state.data.loginUserId;
       
       // 상대방 이름 취득(EC시스템의 Order관리의 담당자이름)
@@ -507,9 +502,8 @@ export default {
 
       // 결제결과로 받을수 있는 항목에 임의의 데이타 지정
       const dateInfo = new Date();
-      const sod = new Date(dateInfo.getTime() - (dateInfo.getTimezoneOffset() * 60000)).toISOString()
-      const uniqueTime = sod.replace('T',' ').substring(0, 19)
-      const uniqueField = 'Alipay' + '_' + uniqueTime + '_' + classNum + '_' + userName;
+      const sod = new Date(dateInfo.getTime() - (dateInfo.getTimezoneOffset() * 60000)).toISOString();
+      const uniqueField = 'alipay' + '_' + loginUserId + '_' + sod;
 
       // ECSystem에서 결제(senType:ec)
       if (sendType === "ec") {
