@@ -442,7 +442,8 @@ export default {
       // 결제결과로 받을수 있는 항목에 임의의 데이타 지정      
       let dateInfo = new Date();
       const sod = new Date(dateInfo.getTime() - (dateInfo.getTimezoneOffset() * 60000)).toISOString();
-      const uniqueField = 'wechat' + '_' + loginUserId + '_' + sod;
+      let uniqueDate = dateInfo.getFullYear() + "-" + (dateInfo.getMonth() + 1) + "-" + dateInfo.getDate() + "-" + dateInfo.getHours() + "-" + dateInfo.getMinutes();
+      const uniqueField = 'wechat' + '_' + loginUserId + '_' + uniqueDate;
       
       // ECSystem에서 결제확인 페이지(LiveStreaming)에 데이타 송신(senType:ec)
       if (sendType === "ec") {
@@ -503,7 +504,8 @@ export default {
       // 결제결과로 받을수 있는 항목에 임의의 데이타 지정
       const dateInfo = new Date();
       const sod = new Date(dateInfo.getTime() - (dateInfo.getTimezoneOffset() * 60000)).toISOString();
-      const uniqueField = 'alipay' + '_' + loginUserId + '_' + sod;
+      let uniqueDate = dateInfo.getFullYear() + "-" + (dateInfo.getMonth() + 1) + "-" + dateInfo.getDate() + "-" + dateInfo.getHours() + "-" + dateInfo.getMinutes();
+      const uniqueField = 'alipay' + '_' + loginUserId + '_' + uniqueDate;
 
       // ECSystem에서 결제(senType:ec)
       if (sendType === "ec") {
