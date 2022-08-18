@@ -56,6 +56,7 @@ export default {
         this.$message("会议码格式不正确, 请输入12位以内纯数字");
         return;
       }
+
       hvuex({ classNum: this.room, userName: this.displayName, loginUserId: this.$route.query.userId, type: this.$route.query.type });
       
       // 페이지 이동

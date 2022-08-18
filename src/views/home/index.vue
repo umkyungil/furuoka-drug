@@ -4,7 +4,7 @@
     <div class="header" v-show="$store.state.data.classNum">
       <span @click="hCopy" id="channel">{{$t("header.classNum")}}：{{ $store.state.data.classNum }}</span>
       <span>&nbsp;{{$t("header.userName")}}：{{ $store.state.data.userName }}</span>
-    </div>    
+    </div>
     <!-- 모달 -->
     <div>
       <a-modal :visible="visible" title="Furuokadrug" @ok="goBack">
@@ -89,6 +89,8 @@
           <i @click="alipayOpen()" :style="'background-image:url(' + alipayUrl +   ')'" ></i>
           <span>{{$t("footer.alipay")}}</span>
         </div>
+
+
         <!-- 카메라 선택 -->
         <div class="cameraSelect">
           <span>Camera Select</span>
@@ -98,6 +100,8 @@
             </option>
           </select>          
         </div>
+
+
       </div>
     </div>
     <div v-show="leaveShadow" class="shadow">
@@ -195,6 +199,8 @@ export default {
     this.$nextTick(() => {
       window.rtcClient = RTCClient.instance;
       this.init();
+      // 카메라 장치를 전부 추출
+      this.getDevices();
     });
   },
   methods: {
@@ -207,9 +213,6 @@ export default {
       if(this.$route.query.i18nextLng) {
         this.$i18n.locale = this.$route.query.i18nextLng;
       }
-
-      // 카메라 장치를 전부 추출
-      this.getCameras();
       
       // 콜백등록
       this.registerCallBack();
@@ -356,26 +359,12 @@ export default {
           this.confirmLoading = false;
       }, 2000);
     },
-    // 선택된 카메라 장치 아이디
+    // 선택된 카메라 전환
     async handleCameraChange(event) {
-      await this.getMedia(event.target.value)      
-    },
-    // 카메라 장치를 전부 추출
-    async getCameras() {
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const cameraDevices = devices.filter(device => device.kind === "videoinput");
-        this.cameras = cameraDevices
-      } catch (e) {
-        console.log("getCameras: ", e);
-      }     
-    },
-    // 선택된 카메라로 전환
-    async getMedia(deviceId) {
-      const userId = this.$store.state.data.userId;
+      const deviceId = event.target.value;
 
       // 후면 카메라
-      // const backConstrains = { audio: true, video: { facingMode: "environment" } }
+      const backConstrains = { audio: true, video: { facingMode: "environment" } }
       // 셀피 카메라
       const initialConstrains = { audio: true, video: { facingMode: "user" } };
       // 특정 카메라 디바이스 선택(해당 디바이스가 없으면 비디오가 표시되지 않음)
@@ -387,7 +376,7 @@ export default {
           deviceId? cameraConstrains : initialConstrains
         )
         // 멤버리스트에 스트림 대입
-        const chgStream = document.getElementById(userId).srcObject = stream
+        const chgStream = document.getElementById(this.$store.state.data.userId).srcObject = stream
         // 멤버리스트 카메라 전환
         AppConfig.localStream  = chgStream;
         // 메인화면 카메라 전환(메인화면 다시그리기)
@@ -396,9 +385,24 @@ export default {
           document.getElementById("localVideo"),
           1
         );
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
       }
+    },
+    
+    // 카메라 장치를 전부 추출
+    async getDevices() {
+      try {
+        // 권한등록
+        await navigator.mediaDevices.getUserMedia({video: true, audio: true})
+
+        const deviceInfos = await navigator.mediaDevices.enumerateDevices();
+        const videoInfos = deviceInfos.filter(device => device.kind === "videoinput");
+        this.cameras = videoInfos
+
+      } catch (error) {
+        console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
+      }     
     },
     forceExit() {
       // 채팅방에 일정시간동안 혼자인 경우 강제 퇴장
@@ -428,7 +432,7 @@ export default {
       }
       const reg = new RegExp(/^([0-9]{1,12})?$/g);
       if (!reg.test(amount)) {
-        this.$message("会议码格式不正确"); // 숫자를 입력해 주십시요
+        this.$message("会议码格式不正确");
         return;
       }
 
